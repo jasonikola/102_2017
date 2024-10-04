@@ -12,3 +12,28 @@ body {
   font-weight: bold;
   color: white;
 }
+
+.loginForm {
+  margin: 50px auto;
+  background-color: #00979D;
+  padding: 20px;
+  border-radius: 20px;
+  width: 400px;
+}
+
+.loginForm input[type=text], input[type=password] {
+  display: block;
+  padding: 10px;
+  margin: 10px;
+  width: 100%;
+  outline: none;
+}
+
+.textAlignLeft {
+  text-align: left;
+}
+
+.errorMessage {
+  font-weight: bold;
+  color: red;
+}

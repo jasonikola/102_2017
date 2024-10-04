@@ -1,21 +1,21 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import './App.css';
-import Login from "./pages/Login";
+import LoginPage from "./pages/LoginPage";
 import Header from "./components/Header";
-import Student from "./pages/Student";
-import Professor from "./pages/Professor";
+import StudentPage from "./pages/StudentPage";
+import ProfessorPage from "./pages/ProfessorPage";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <Header/>
         <Routes>
-          <Route path="/login" element={<Login/>} />
-          <Route path="/professor" element={<Professor/>} />
-          <Route path="/student" element={<Student/>} />
-          <Route path="/" element={<Navigate to={!!sessionStorage.getItem('logged') ? '/professor' : '/login'}/>} /> // TODO
+          <Route path="/login" element={<LoginPage/>} />
+          <Route path="/professor/*" element={<ProfessorPage/>} />
+          <Route path="/student" element={<StudentPage/>} />
+          <Route path="/" element={<Navigate to={'/login'}/>} />
+          {/*TODO if user then navigate to profesor/student page*/}
         </Routes>
       </Router>
     </div>
