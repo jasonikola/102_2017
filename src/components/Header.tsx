@@ -1,17 +1,18 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { removeUser, selectUser } from "../features/userSlice";
-import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { removeUser } from "../features/userSlice";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const user: any = useSelector(selectUser)?.user;
-
   const onClickHandler = () => {
     dispatch(removeUser());
+    // TODO upgrada logout
     navigate('/login');
   }
 
@@ -23,21 +24,16 @@ function Header() {
       sx={{ pl: 1, pr: 1 }}
     >
       <Toolbar disableGutters={true} variant={'dense'}>
-        <Typography variant="h6" component="div">
+        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
           Ardunent
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Typography variant="h6" component="div">
-          {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : ''}
-        </Typography>
-        <Button
-          variant={'text'}
-          sx={{ ml: 1 }}
-          onClick={onClickHandler}
-          color={'secondary'}
-        >
-          Odjavi se
-        </Button>
+        <IconButton onClick={() => console.log('TODO settings')} color="secondary">
+          <SettingsIcon />
+        </IconButton>
+        <IconButton onClick={onClickHandler} color="secondary">
+          <LogoutIcon />
+        </IconButton>
       </Toolbar>
     </AppBar>
   );

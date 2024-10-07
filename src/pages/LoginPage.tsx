@@ -63,14 +63,6 @@ function LoginPage() {
     }
   }
 
-  const emailValidation = () => {
-    if (!emailRegex.test(email)) {
-      setError('Pogrešan format email-a');
-    } else {
-      setError('');
-    }
-  }
-
   const disableButton = (): boolean => {
     return !email || !password || !emailRegex.test(email);
   }
@@ -85,7 +77,6 @@ function LoginPage() {
           <TextField
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            onBlurCapture={emailValidation}
             placeholder={'E-mail'}
             fullWidth
             required

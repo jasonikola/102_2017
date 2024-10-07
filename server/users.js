@@ -13,7 +13,7 @@ router.post('/login', async (req, res) => {
     const user = await usersCollection.findOne({ email });
     const badCredentials = "Email ili lozinka nisu tačni.";
 
-    if (user) {
+    if (user && user.role === 'professor') {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
         res.status(200).send({

@@ -8,7 +8,7 @@ function Components() {
   return (
     <>
       <TableContainer component={Paper}>
-        <Button>Dodaj proizvod</Button>
+        <Button>Dodaj komponentu</Button>
       </TableContainer>
     </>
   );

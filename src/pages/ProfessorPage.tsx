@@ -1,52 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import Components from "./Components";
 import Students from "./Students";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tab, Tabs } from "@mui/material";
 
 function ProfessorPage() {
 
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<string>('students')
+  const location = useLocation();
+
+  const [tabNumber, setTabNumber] = React.useState(0);
+  const tabsData: any = {
+    students: { number: 0, label: 'Studenti' },
+    groups: { number: 1, label: 'Grupe' },
+    TODO: { number: 2, label: 'Seminarski' },
+    components: { number: 3, label: 'Komponente' },
+    schemes: { number: 4, label: 'Šabloni' }
+  };
+
+
+  useEffect(() => {
+    debugger
+    let pathname: string = location.pathname.split('/')?.pop() || '';
+    let tab: any = tabsData[pathname];
+    if (tab) {
+      setTabNumber(tab.number);
+    }
+  }, []);
 
   const onClickHandler = (event: any) => {
     const value: string = event.target.value;
-    setSelected(value);
     navigate(`${value}`, { replace: true });
   }
 
-  const sx = {
-    ml: 1,
-    color: 'primary.main',
-    backgroundColor: 'white',
-    borderRadius: '10px 10px 0 0',
-    // TODO hover and selected
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabNumber(newValue);
   };
 
   return (
     <>
       <Header />
       <Box sx={{ p: 1 }}>
-        <Box sx={{ mt: 1 }}>
-          <Button
-            disableElevation
-            variant={'contained'}
-            sx={sx}
-            onClick={onClickHandler}
-            value={'students'}
-          >
-            Studenti
-          </Button>
-          <Button
-            disableElevation
-            variant={'contained'}
-            sx={sx}
-            onClick={onClickHandler}
-            value={'components'}
-          >
-            Komponente
-          </Button>
+        <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
+          <Tabs value={tabNumber} onChange={handleChange}>
+            {
+              Object.keys(tabsData).map((tab: any) => <Tab label={tabsData[tab].label} />)
+            }
+          </Tabs>
         </Box>
         <Routes>
           <Route path="/" element={<Navigate to={'/professor/students'} replace={true} />} />
