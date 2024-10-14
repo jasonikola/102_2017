@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import Components from "./Components";
 import Students from "./Students";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import { Box, Button, Tab, Tabs } from "@mui/material";
+import Header from "../../components/Header";
+import { Box, Tab, Tabs } from "@mui/material";
 
-function ProfessorPage() {
+function ProfessorHomePage() {
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,9 +19,7 @@ function ProfessorPage() {
     schemes: { number: 4, label: 'Šabloni' }
   };
 
-
   useEffect(() => {
-    debugger
     let pathname: string = location.pathname.split('/')?.pop() || '';
     let tab: any = tabsData[pathname];
     if (tab) {
@@ -29,14 +27,12 @@ function ProfessorPage() {
     }
   }, []);
 
-  const onClickHandler = (event: any) => {
-    const value: string = event.target.value;
-    navigate(`${value}`, { replace: true });
-  }
-
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabNumber(newValue);
+    const newPage: any = Object.keys(tabsData).filter((tab: any) => tabsData[tab].number === newValue)[0];
+    if (newPage) {
+      navigate(newPage, { replace: true })
+    }
   };
 
   return (
@@ -46,12 +42,12 @@ function ProfessorPage() {
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
           <Tabs value={tabNumber} onChange={handleChange}>
             {
-              Object.keys(tabsData).map((tab: any) => <Tab label={tabsData[tab].label} />)
+              Object.keys(tabsData).map((tab: any) => <Tab key={`tab-${tabsData[tab].label}`} label={tabsData[tab].label} />)
             }
           </Tabs>
         </Box>
         <Routes>
-          <Route path="/" element={<Navigate to={'/professor/students'} replace={true} />} />
+          <Route path="/" element={<Navigate to={'./students'} replace={true} />} />
           <Route path="/components" element={<Components />} />
           <Route path="/students" element={<Students />} />
         </Routes>
@@ -60,4 +56,4 @@ function ProfessorPage() {
   );
 }
 
-export default ProfessorPage;
+export default ProfessorHomePage;

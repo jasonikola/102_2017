@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUser, setUser } from "../features/userSlice";
+import { selectUser, setUser } from "../../features/userSlice";
 import { Box, Button, Checkbox, Container, FormControlLabel, Paper, TextField, Typography } from "@mui/material";
 
-function LoginPage() {
+function ProfessorPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -54,7 +54,7 @@ function LoginPage() {
         }
 
         dispatch(setUser(result));
-        navigate(`/${result.role}`, { replace: true });
+        navigate(`./home`, { replace: true });
       } else {
         setError(result.error);
       }
@@ -117,4 +117,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default ProfessorPage;

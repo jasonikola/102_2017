@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import {
   Button,
-  Dialog, DialogActions, DialogContent,
-  DialogTitle,
   Paper,
   Table,
   TableBody,
@@ -12,12 +10,16 @@ import {
   TableHead,
   TableRow
 } from "@mui/material";
+import AddStudent from "../../dialogs/AddStudent";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../features/userSlice";
 
-function Products() {
+function Students() {
   const [students, setStudents] = useState<never[]>([]);
-  const [open, setOpen] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState<string>("");
-  const [dialogComponents, setDialogComponents] = useState<string[]>([]);
+  const [addStudentOpen, setAddStudentOpen] = useState(false);
+
+  const user = useSelector(selectUser)?.user;
+  const courses = user?.schoolYearData?.courses || [];
 
   useEffect(() => {
     getStudents().then((students: any) => {
@@ -39,25 +41,21 @@ function Products() {
     }
   }
 
-  const handleOnClose = () => {
-    setOpen(false);
-  }
-
-  const handleOnClick = (student: any) => {
-    setOpen(true);
-    setDialogTitle(`${student.firstName} ${student.lastName} komponente`);
-    setDialogComponents(student.components);
+  const handleOnClick = () => {
+    setAddStudentOpen(true);
   }
 
   return (
     <>
       <TableContainer component={Paper}>
+        <Button variant={'text'} onClick={handleOnClick}>
+          Dodaj studenta
+        </Button>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Broj indexa</TableCell>
               <TableCell>Ime i Prezime</TableCell>
-              <TableCell>Email</TableCell>
               <TableCell>Komponente</TableCell>
             </TableRow>
           </TableHead>
@@ -66,17 +64,8 @@ function Products() {
               <TableRow key={index}>
                 <TableCell>{student.index}</TableCell>
                 <TableCell>{`${student.firstName} ${student.lastName}`}</TableCell>
-                <TableCell>{student.email}</TableCell>
                 <TableCell>
-                  <Button
-                    variant={'text'}
-                    color={'primary'}
-                    disabled={!student.components.length}
-                    onClick={() => handleOnClick(student)}
-                    sx={{ textTransform: 'none' }}
-                  >
-                    {`Broj komponenti: ${student.components.length}`}
-                  </Button>
+                  {`Broj komponenti:`}
                 </TableCell>
               </TableRow>
             ))}
@@ -84,19 +73,14 @@ function Products() {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleOnClose}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>{
-          dialogComponents.map((component: any) => {
-            return <p>{component}</p>
-          })
-        }</DialogContent>
-        <DialogActions>
-          <Button onClick={handleOnClose}>Zatvori</Button>
-        </DialogActions>
-      </Dialog>
+      <AddStudent
+        open={addStudentOpen}
+        courses={courses}
+        onClose={() => {
+          setAddStudentOpen(false)
+        }} />
     </>
   );
 }
 
-export default Products;
+export default Students;

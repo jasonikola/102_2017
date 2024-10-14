@@ -16,6 +16,9 @@ export const theme = createTheme({
         input: {
           padding: '4px 8px',
         },
+        root: {
+          margin: '4px 0'
+        }
       },
     }
   },

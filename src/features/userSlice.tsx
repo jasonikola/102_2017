@@ -11,13 +11,6 @@ const userSlice = createSlice({
     },
     removeUser: (state) => {
       state.user = null;
-    },
-    setUserComponents: (state, action) => {
-      if (state.user) {
-        // TODO
-        // @ts-ignore
-        state.user.components = action.payload;
-      }
     }
   }
 });
@@ -26,8 +19,7 @@ export default userSlice.reducer;
 
 export const {
   setUser,
-  removeUser,
-  setUserComponents
+  removeUser
 } = userSlice.actions;
 
 export const selectUser = (state: any) => state.user;
