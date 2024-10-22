@@ -29,7 +29,7 @@ function Students() {
 
   const getStudents = async () => {
     try {
-      const response = await axios.get('/users/students');
+      const response = await axios.get('/students/get');
 
       if (response.status === 200) {
         return response.data;
@@ -39,6 +39,12 @@ function Students() {
     } finally {
       // TODO
     }
+  }
+
+  const closeAndRefresh = async () => {
+    setAddStudentOpen(false);
+    const students = await getStudents();
+    setStudents(students);
   }
 
   const handleOnClick = () => {
@@ -56,7 +62,7 @@ function Students() {
             <TableRow>
               <TableCell>Broj indexa</TableCell>
               <TableCell>Ime i Prezime</TableCell>
-              <TableCell>Komponente</TableCell>
+              <TableCell>Predmeti</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -65,7 +71,7 @@ function Students() {
                 <TableCell>{student.index}</TableCell>
                 <TableCell>{`${student.firstName} ${student.lastName}`}</TableCell>
                 <TableCell>
-                  {`Broj komponenti:`}
+                  {`Broj predmeta: ${student.courses.length}`}
                 </TableCell>
               </TableRow>
             ))}
@@ -76,6 +82,7 @@ function Students() {
       <AddStudent
         open={addStudentOpen}
         courses={courses}
+        closeAndRefresh={closeAndRefresh}
         onClose={() => {
           setAddStudentOpen(false)
         }} />

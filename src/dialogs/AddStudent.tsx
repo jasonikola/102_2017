@@ -15,6 +15,7 @@ import axios from "axios";
 interface AddStudentProps {
   open: boolean;
   onClose: () => void;
+  closeAndRefresh: () => void;
   courses: string[];
 }
 
@@ -37,13 +38,16 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
       lastName,
       courses: courses.filter((course: any) => course.value)?.map((course: any) => course.name)
     };
-    console.log(data);
-    const response = await axios.put('/users/addStudent' , data);
+
+    const response = await axios.put('/students/add', data);
+    if (response.status === 200) {
+      props.closeAndRefresh();
+    }
   }
 
   const handleOnChange = (courseName: string) => {
     const newCourses = courses.map((course: any) => {
-      if(course.name === courseName) {
+      if (course.name === courseName) {
         course.value = !course.value;
       }
       return course
@@ -54,6 +58,14 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
 
   const checkButtonDisable = () => {
     return indexNumber <= 0 || year <= 0 || firstName === '' || lastName === '' || !courses.some((course: any) => course.value);
+  }
+
+  const numberFieldOnChange = (field: string, value: string) => {
+    let numberValue = parseInt(value);
+    if (isNaN(numberValue)) {
+      numberValue = 0;
+    }
+    field === 'year' ? setYear(numberValue) : setIndexNumber(numberValue);
   }
 
   // TODO NaN when removing number value from input
@@ -67,14 +79,14 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
           <TextField
             placeholder={'Broj indeksa'}
             value={indexNumber}
-            onChange={(e) => setIndexNumber(parseInt(e.target.value))}
+            onChange={(e) => numberFieldOnChange('index', e.target.value)}
             required
           />
           <Typography variant="h5">/</Typography>
           <TextField
             placeholder={'Godina upisa'}
             value={year}
-            onChange={(e) => setYear(parseInt(e.target.value))}
+            onChange={(e) => numberFieldOnChange('year', e.target.value)}
             required
           />
         </Box>
