@@ -21,7 +21,8 @@ router.put('/add', async (req, res) => {
     } else {
       const data = { index, firstName, lastName, group };
       await studentsCollection.insertOne(data);
-      res.status(200).send(data);
+      const {_id, ...dataWithoutId} = data;
+      res.status(200).json(dataWithoutId);
     }
   } catch (e) {
     res.status(500);

@@ -1,17 +1,16 @@
 import {
   Box,
-  Button,
   Card,
   CardContent,
   List,
   ListItem, ListItemText,
   Paper,
   TableContainer,
-  TextField,
   Typography
 } from "@mui/material";
 import React, { useEffect } from "react";
 import axios from "axios";
+import FormInput from "../../components/FormInput";
 
 function Groups() {
   const [newGroup, setNewGroup] = React.useState('');
@@ -30,7 +29,7 @@ function Groups() {
         return response.data;
       }
     } catch (e) {
-
+      // TODO
     }
   }
 
@@ -47,7 +46,7 @@ function Groups() {
         setGroups(updatedGroups);
       }
     } catch (e: any) {
-      // TODO add some warrning
+      // TODO add some warning
     }
   }
 
@@ -58,44 +57,25 @@ function Groups() {
 
   return (
     <TableContainer component={Paper}>
-      <Box
-        component={'form'}
+      <FormInput
         onSubmit={onSubmitHandler}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2
-        }}>
-        <TextField
-          value={newGroup}
-          onChange={(e) => setNewGroup(e.target.value)}
-          placeholder={'Ime grupe'}
-          fullWidth
-          required
-          autoFocus
-        />
-        <Button
-          type={'submit'}
-          variant={'contained'}
-          fullWidth
-          onClick={onSubmitHandler}
-          disabled={disableButton()}
-          sx={{ minWidth: 'auto', px: 1.5, py: 0.5, fontSize: '0.75rem', maxWidth: '250px' }}
-        >
-          Dodaj novu grupu
-        </Button>
-      </Box>
+        onChange={(e) => setNewGroup(e.target.value)}
+        onClick={onSubmitHandler}
+        value={newGroup}
+        disabled={disableButton()}
+        title={'Dodaj novu grupu'}
+      />
       <Box>
         {
-          groups?.map((group: any, index: number) => (
-            <Card key={index} sx={{ maxWidth: 400, margin: '20px auto', boxShadow: 3 }}>
+          groups?.map((group: any) => (
+            <Card key={`card${group.name}`} sx={{ maxWidth: 400, margin: '20px auto', boxShadow: 3 }}>
               <CardContent>
                 <Typography variant="h5" component="div" gutterBottom>
                   {group.name}
                 </Typography>
                 <List>
-                  {group.members?.map((member: any, index: number) => (
-                    <ListItem key={index} disablePadding>
+                  {group.members?.map((member: any) => (
+                    <ListItem key={`listItem${group.name}-${member}`} disablePadding>
                       <ListItemText primary={member} />
                     </ListItem>
                   ))}

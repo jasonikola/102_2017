@@ -3,6 +3,7 @@ const express = require('express');
 const userRoutes = require('./users');
 const studentsRoutes = require('./students');
 const groupsRoutes = require('./groups');
+const themesRoutes = require('./themes');
 require('dotenv').config();
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/students', studentsRoutes);
 app.use('/groups', groupsRoutes);
+app.use('/themes', themesRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

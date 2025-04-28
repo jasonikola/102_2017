@@ -5,6 +5,7 @@ import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-
 import Header from "../../components/Header";
 import { Box, Tab, Tabs } from "@mui/material";
 import Groups from "./Groups";
+import Themes from "./Themes";
 
 function ProfessorHomePage() {
 
@@ -52,6 +53,7 @@ function ProfessorHomePage() {
           <Route path="/components" element={<Components />} />
           <Route path="/students" element={<Students />} />
           <Route path="/groups" element={<Groups />} />
+          <Route path="/themes" element={<Themes />} />
         </Routes>
       </Box>
     </>

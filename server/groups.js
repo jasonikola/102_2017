@@ -20,11 +20,13 @@ router.put('/add', async (req, res) => {
       res.status(401).json("Vec postoji grupa sa datim imenom");
     } else {
       const members = [];
-      await groups.insertOne({ name, members });
-      res.status(200).send({ name, members: [] });
+      const data = { name, members };
+      await groups.insertOne(data);
+      const {_id, ...dataWithoutId} = data;
+      res.status(200).json(dataWithoutId);
     }
   } catch (e) {
-    res.status(500);
+    res.status(500).json('Internal server error');
   }
 });
 
