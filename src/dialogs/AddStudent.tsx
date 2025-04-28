@@ -5,7 +5,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControlLabel, Switch,
   TextField,
   Typography
 } from "@mui/material";
@@ -15,8 +14,7 @@ import axios from "axios";
 interface AddStudentProps {
   open: boolean;
   onClose: () => void;
-  closeAndRefresh: () => void;
-  courses: string[];
+  closeAndRefresh: (data: any) => void;
 }
 
 const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
@@ -25,39 +23,25 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
 
-  const [courses, setCourses] = useState<any>(
-    props.courses.map((course: string) => {
-      return { name: course, value: false }
-    })
-  );
-
   const addStudent = async () => {
     const data = {
       index: `${indexNumber}/${year}`,
       firstName,
-      lastName,
-      courses: courses.filter((course: any) => course.value)?.map((course: any) => course.name)
+      lastName
     };
 
-    const response = await axios.put('/students/add', data);
-    if (response.status === 200) {
-      props.closeAndRefresh();
+    try {
+      const response = await axios.put('/students/add', data);
+      if (response.status === 200 && response.data) {
+        props.closeAndRefresh(response.data);
+      }
+    } catch (e) {
+      // TODO add error message
     }
   }
 
-  const handleOnChange = (courseName: string) => {
-    const newCourses = courses.map((course: any) => {
-      if (course.name === courseName) {
-        course.value = !course.value;
-      }
-      return course
-    });
-
-    setCourses(newCourses);
-  }
-
   const checkButtonDisable = () => {
-    return indexNumber <= 0 || year <= 0 || firstName === '' || lastName === '' || !courses.some((course: any) => course.value);
+    return indexNumber <= 0 || year <= 0 || firstName === '' || lastName === '';
   }
 
   const numberFieldOnChange = (field: string, value: string) => {
@@ -68,7 +52,6 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
     field === 'year' ? setYear(numberValue) : setIndexNumber(numberValue);
   }
 
-  // TODO NaN when removing number value from input
   // TODO first letter uppercase
 
   return <Dialog open={props.open} onClose={props.onClose}>
@@ -104,21 +87,6 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
           fullWidth
           required
         />
-        {
-          courses.map((course: any) => {
-            return <FormControlLabel
-              key={`formControl${course.name}`}
-              control={
-                <Switch
-                  checked={course.value}
-                  onChange={() => handleOnChange(course.name)}
-                  name={`${course.name}`}
-                />
-              }
-              label={course.name}
-            />
-          })
-        }
       </Box>
     </DialogContent>
     <DialogActions>

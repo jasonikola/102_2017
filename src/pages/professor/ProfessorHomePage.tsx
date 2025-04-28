@@ -4,6 +4,7 @@ import Students from "./Students";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import { Box, Tab, Tabs } from "@mui/material";
+import Groups from "./Groups";
 
 function ProfessorHomePage() {
 
@@ -14,7 +15,7 @@ function ProfessorHomePage() {
   const tabsData: any = {
     students: { number: 0, label: 'Studenti' },
     groups: { number: 1, label: 'Grupe' },
-    TODO: { number: 2, label: 'Seminarski' },
+    themes: { number: 2, label: 'Teme' },
     components: { number: 3, label: 'Komponente' },
     schemes: { number: 4, label: 'Šabloni' }
   };
@@ -50,6 +51,7 @@ function ProfessorHomePage() {
           <Route path="/" element={<Navigate to={'./students'} replace={true} />} />
           <Route path="/components" element={<Components />} />
           <Route path="/students" element={<Students />} />
+          <Route path="/groups" element={<Groups />} />
         </Routes>
       </Box>
     </>

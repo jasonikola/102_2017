@@ -4,9 +4,9 @@ const { connectToDatabase } = require("./DatabaseConnection");
 const router = express.Router();
 
 router.put('/add', async (req, res) => {
-  const { index, firstName, lastName, courses } = req.body;
+  const { index, firstName, lastName } = req.body;
 
-  if (!index || !firstName || !lastName || !courses || !courses.length) {
+  if (!index || !firstName || !lastName) {
     res.status(400).json("Došlo je do greške, pokušajte ponovo.");
   }
 // TODO add years to every students, add year on request and in if statement
@@ -14,18 +14,14 @@ router.put('/add', async (req, res) => {
     const db = await connectToDatabase();
     const studentsCollection = db.collection('students');
     const student = await studentsCollection.findOne({ index });
+    const group = '';
 
     if (student) {
-      if (!student.firstName === firstName || !student.lastName === lastName) {
-        res.status(401).json("Korisnik sa datim imenom vec postoji")
-      }
-
-      const updatedCourses = [...new Set([...student.courses, ...courses])];
-      await studentsCollection.updateOne({ index }, { $set: { courses: updatedCourses } });
-      res.status(200).json("Uspesno dodat predmet studentu");
+      res.status(401).json("Korisnik sa datim indexom vec postoji");
     } else {
-      await studentsCollection.insertOne({ index, firstName, lastName, courses });
-      res.status(200).json("Student uspеno dodat");
+      const data = { index, firstName, lastName, group };
+      await studentsCollection.insertOne(data);
+      res.status(200).send(data);
     }
   } catch (e) {
     res.status(500);
@@ -47,11 +43,43 @@ router.get('/get', async (req, res) => {
         firstName: student.firstName,
         lastName: student.lastName,
         index: student.index,
-        courses: student.courses
+        group: student.group,
+        points: student.points
       };
     });
     res.status(200).send(returnValue);
   } catch (error) {
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/assignGroup', async (req, res) => {
+  console.log('/students/assignGroup call');
+  const { index, groupName } = req.body;
+
+  if (!index || groupName === undefined || groupName === null) {
+    res.status("Došlo je do greške, pokušajte ponovo.")
+  }
+
+  try {
+    const db = await connectToDatabase();
+    const studentsCollection = db.collection('students');
+    const student = await studentsCollection.findOne({ index });
+
+    if (student) {
+      if (groupName) {
+        const groupCollection = db.collection('groups');
+        const groupExists = await groupCollection.findOne({ name: groupName });
+        if (!groupExists) {
+          res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+        }
+      }
+      await studentsCollection.updateOne({ index }, { $set: { group: groupName } });
+      res.status(200).json("Grupa studenta promenjena.");
+    } else {
+      res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    }
+  } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });
   }
 });

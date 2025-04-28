@@ -16,18 +16,12 @@ function ProfessorPage() {
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const emailRegex: RegExp = /^[a-zA-Z0-9-]+@pmf\.kg\.ac\.rs$/;
 
-  const user: any = useSelector(selectUser)?.user;
-
   useEffect(() => {
     let password = Cookies.get('password');
     let email = Cookies.get('email');
 
-    if (user) {
-      navigate(`${user.role}`, { replace: true });
-    } else if (email && password) {
-      setEmail(email);
-      setPassword(password);
-    }
+    email && setEmail(email);
+    password && setPassword(password);
   }, []);
 
   const onSubmitHandler = async (event: any) => {
