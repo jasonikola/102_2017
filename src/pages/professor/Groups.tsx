@@ -1,34 +1,48 @@
 import {
-  Box,
-  Card,
-  CardContent,
-  List,
-  ListItem, ListItemText,
-  Paper,
-  TableContainer,
-  Typography
+  Button, MenuItem,
+  Paper, Select, Table, TableBody, TableCell,
+  TableContainer, TableHead, TableRow
 } from "@mui/material";
 import React, { useEffect } from "react";
 import axios from "axios";
 import FormInput from "../../components/FormInput";
+import ApiService from "../../ApiService";
 
 function Groups() {
   const [newGroup, setNewGroup] = React.useState('');
   const [groups, setGroups] = React.useState<any[]>([]);
+  const [themes, setThemes] = React.useState<any[]>([]);
+  const [selectedThemes, setSelectedThemes] = React.useState<any[]>([]);
+  const noTheme = 'Bez teme'
 
   useEffect(() => {
     getGroups().then((groups: any) => {
+      const newThemes: any[] = [];
       setGroups(groups);
+      groups.forEach((group: any) => {
+        newThemes.push(group.theme ? group.theme : noTheme);
+      });
+      setSelectedThemes(newThemes);
+    });
+    getThemes().then((themes: any) => {
+      setThemes(themes);
     });
   }, []);
 
   const getGroups = async () => {
     try {
-      const response = await axios.get('/groups/get');
-      if (response.status === 200) {
-        return response.data;
-      }
+      return await ApiService.getGroups();
     } catch (e) {
+      console.log(e);
+      //  TODO warning
+    }
+  }
+
+  const getThemes = async () => {
+    try {
+      return await ApiService.getThemes();
+    } catch (e) {
+      console.log(e);
       // TODO
     }
   }
@@ -55,6 +69,38 @@ function Groups() {
     return newGroup.length === 0;
   }
 
+  const handleThemeChange = (index: number, themeName: string, groupName: string) => {
+    const updatedSelectedThemes = [...selectedThemes];
+    updatedSelectedThemes[index] = themeName;
+    setSelectedThemes(updatedSelectedThemes);
+
+    const updatedThemes = themes.map((theme: any) => {
+      if (theme.name === themeName) {
+        theme.group = groupName;
+      }
+      return theme;
+    });
+    setThemes(updatedThemes);
+
+    updateGroupTheme(groupName, themeName);
+  }
+
+  const updateGroupTheme = async (groupName: string, themeName: string) => {
+    try {
+      const response = await axios.post('/groups/assignTheme',
+        { groupName, themeName: themeName !== noTheme ? themeName : '' },
+        {
+          headers: { 'Content-Type': 'application/json' }
+        });
+      if (response.status !== 200) {
+        // TODO add some warning
+      }
+    } catch (e: any) {
+      console.log(e);
+      // TODO warning
+    }
+  }
+
   return (
     <TableContainer component={Paper}>
       <FormInput
@@ -65,26 +111,59 @@ function Groups() {
         disabled={disableButton()}
         title={'Dodaj novu grupu'}
       />
-      <Box>
-        {
-          groups?.map((group: any) => (
-            <Card key={`card${group.name}`} sx={{ maxWidth: 400, margin: '20px auto', boxShadow: 3 }}>
-              <CardContent>
-                <Typography variant="h5" component="div" gutterBottom>
-                  {group.name}
-                </Typography>
-                <List>
-                  {group.members?.map((member: any) => (
-                    <ListItem key={`listItem${group.name}-${member}`} disablePadding>
-                      <ListItemText primary={member} />
-                    </ListItem>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Ime grupe</TableCell>
+            <TableCell>Clanovi</TableCell>
+            <TableCell>Tema za seminarski</TableCell>
+            <TableCell>Komponente</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {groups?.map((group: any, index: number) => (
+            <TableRow key={`tableRow${group.name}`}>
+              <TableCell>{group.name}</TableCell>
+              <TableCell>
+                {
+                  !group.members?.length ? 'Grupa nema clanova' : group.members.map((member: any) => (
+                    <div key={`${member}Div`}>{member}</div>
+                  ))
+                }
+              </TableCell>
+              <TableCell>
+                <Select
+                  value={selectedThemes[index]}
+                  onChange={(e: any) => handleThemeChange(index, e.target.value, group.name)}
+                  fullWidth
+                  displayEmpty
+                >
+                  <MenuItem value={noTheme}>{noTheme}</MenuItem>
+                  {themes.map((theme: any) => (
+                    <MenuItem
+                      key={`menuItem${theme.name}`}
+                      value={theme.name}
+                      disabled={!!theme.group && group.name !== theme.group}
+                      sx={{
+                        ...(theme.group && {
+                          color: 'text.disabled',
+                        }),
+                      }}
+                    >
+                      {theme.name}
+                    </MenuItem>
                   ))}
-                </List>
-              </CardContent>
-            </Card>
-          ))
-        }
-      </Box>
+                </Select>
+              </TableCell>
+              <TableCell>
+                <Button variant={'text'}>
+                  Komponente
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </TableContainer>
   );
 }

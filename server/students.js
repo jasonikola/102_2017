@@ -59,7 +59,7 @@ router.post('/assignGroup', async (req, res) => {
   const { index, groupName } = req.body;
 
   if (!index || groupName === undefined || groupName === null) {
-    res.status("Došlo je do greške, pokušajte ponovo.")
+    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
   }
 
   try {

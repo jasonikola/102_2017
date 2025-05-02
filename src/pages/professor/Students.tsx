@@ -13,8 +13,7 @@ import {
   MenuItem
 } from "@mui/material";
 import AddStudent from "../../dialogs/AddStudent";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../features/userSlice";
+import ApiService from "../../ApiService";
 
 function Students() {
   const [students, setStudents] = useState<any[]>([]);
@@ -22,9 +21,6 @@ function Students() {
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [addStudentOpen, setAddStudentOpen] = useState(false);
   const noGroup = 'Bez grupe';
-
-
-  const user = useSelector(selectUser)?.user;
 
   useEffect(() => {
     getStudents().then((students: any) => {
@@ -35,8 +31,9 @@ function Students() {
       });
       setSelectedGroups(newGroups);
     });
-    // TODO
-    setGroups([{ name: noGroup }, { name: 'Grupica' }, { name: 'Jutric' }, { name: 'Kafica' }]);
+    getGroups().then((groups:any) => {
+      setGroups(groups);
+    });
   }, []);
 
   const getStudents = async () => {
@@ -50,6 +47,16 @@ function Students() {
       console.log(error);
     } finally {
       // TODO
+    }
+  }
+
+  const getGroups = async () => {
+    try {
+      const groups = await ApiService.getGroups();
+      return groups.map((group: any) => group.name)
+    } catch (e) {
+      console.log(e);
+      //  TODO warning
     }
   }
 
@@ -67,11 +74,11 @@ function Students() {
     console.log('TODO prikazi poene');
   }
 
-  const handleGroupChange = (index: number, newValue: any, indexNumber: string) => {
+  const handleGroupChange = (index: number, groupName: any, indexNumber: string) => {
     const updatedSelectedGroups = [...selectedGroups];
-    updatedSelectedGroups[index] = newValue;
+    updatedSelectedGroups[index] = groupName;
     setSelectedGroups(updatedSelectedGroups);
-    updateGroupName(indexNumber, newValue);
+    updateGroupName(indexNumber, groupName);
   }
 
   const updateGroupName = async (index: string, groupName: string) => {
@@ -106,7 +113,7 @@ function Students() {
           </TableHead>
           <TableBody>
             {students.map((student: any, index) => (
-              <TableRow key={index}>
+              <TableRow key={`tableRow${index}`}>
                 <TableCell>{student.index}</TableCell>
                 <TableCell>{`${student.firstName} ${student.lastName}`}</TableCell>
                 <TableCell>
@@ -115,9 +122,10 @@ function Students() {
                     onChange={(e) => handleGroupChange(index, e.target.value, student.index)}
                     fullWidth
                   >
+                    <MenuItem value={noGroup}>{noGroup}</MenuItem>
                     {groups.map((group: any) => (
-                      <MenuItem key={group.name} value={group.name}>
-                        {group.name}
+                      <MenuItem key={group} value={group}>
+                        {group}
                       </MenuItem>
                     ))}
                   </Select>

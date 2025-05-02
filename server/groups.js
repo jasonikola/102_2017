@@ -22,7 +22,7 @@ router.put('/add', async (req, res) => {
       const members = [];
       const data = { name, members };
       await groups.insertOne(data);
-      const {_id, ...dataWithoutId} = data;
+      const { _id, ...dataWithoutId } = data;
       res.status(200).json(dataWithoutId);
     }
   } catch (e) {
@@ -50,10 +50,43 @@ router.get('/get', async (req, res) => {
         return {
           name: group.name,
           members: members,
+          theme: group.theme
         };
       })
     );
     res.status(200).json(returnValue);
+  } catch (e) {
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
+
+
+router.post('/assignTheme', async (req, res) => {
+  console.log('/groups/assignTheme call');
+  const { groupName, themeName } = req.body;
+  if (!groupName || themeName === undefined || themeName === null) {
+    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+  }
+
+  try {
+    const db = await connectToDatabase();
+    const groupsCollection = db.collection('groups');
+    const group = await groupsCollection.findOne({ name: themeName });
+    const themesCollection = db.collection('themes');
+    const theme = await themesCollection.findOne({ name: themeName });
+
+    if (group || themeName === '' || (themeName && theme)) {
+      if (themeName !== '') {
+        await themesCollection.updateOne({ name: themeName }, { $set: { group: groupName } });
+      } else {
+        await themesCollection.updateOne({ group: groupName }, { $set: { group: '' } });
+      }
+      await groupsCollection.updateOne({ name: groupName }, { $set: { theme: themeName } });
+
+      res.status(200).json('Tema grupe uspesno promenjena');
+    } else {
+      res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    }
   } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });
   }

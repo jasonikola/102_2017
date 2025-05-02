@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Paper, TableContainer, } from "@mui/material";
+import { Paper, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
 import FormInput from "../../components/FormInput";
 import axios from "axios";
 
@@ -61,13 +61,22 @@ function Themes() {
         disabled={disableButton()}
         title={'Dodaj novu temu'}
       />
-      <Box>
+      <TableHead>
+        <TableRow>
+          <TableCell>Ime teme</TableCell>
+          <TableCell>Dodeljena grupi</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
         {
-          themes?.map((theme: any) => (<div key={theme.name}>
-            {theme.name}
-          </div>))
+          themes?.map((theme: any) => (
+            <TableRow key={theme.name}>
+              <TableCell>{theme.name}</TableCell>
+              <TableCell>{theme.group ? theme.group : 'Nije dodeljeno grupi'}</TableCell>
+            </TableRow>
+          ))
         }
-      </Box>
+      </TableBody>
     </TableContainer>
   );
 }

@@ -31,7 +31,7 @@ router.put('/add', async (req, res) => {
 });
 
 router.get('/get', async (req, res) => {
-  console.log('themes/get call');
+  console.log('/themes/get call');
   try {
    const db = await connectToDatabase();
    const themesCollection = await db.collection('themes');
@@ -41,7 +41,7 @@ router.get('/get', async (req, res) => {
    const returnValue = themes.map((theme) => {
      return {
        name: theme.name,
-       members: theme.members
+       group: theme.group
      };
    });
    res.status(200).json(returnValue);
