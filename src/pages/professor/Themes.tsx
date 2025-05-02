@@ -36,7 +36,9 @@ function Themes() {
     try {
       const response = await axios.put(`/themes/add`, data);
       if (response.status === 200 && response.data) {
-        console.log("response", response.data);
+        const updatedThemes = [...themes];
+        updatedThemes.unshift(response.data);
+        setThemes(updatedThemes);
       } else {
         // TOOD deletee
         console.log(response);

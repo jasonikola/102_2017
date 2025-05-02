@@ -27,7 +27,7 @@ function Students() {
       const newGroups: string[] = [];
       setStudents(students);
       students.forEach((student: any) => {
-        newGroups.push(student.group ? student.group : noGroup);
+        newGroups.unshift(student.group ? student.group : noGroup);
       });
       setSelectedGroups(newGroups);
     });
@@ -99,7 +99,7 @@ function Students() {
   return (
     <>
       <TableContainer component={Paper}>
-        <Button variant={'text'} onClick={handleOnClick}>
+        <Button variant={'contained'} onClick={handleOnClick}>
           Dodaj studenta
         </Button>
         <Table>

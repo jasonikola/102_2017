@@ -8,7 +8,7 @@ function Components() {
   return (
     <>
       <TableContainer component={Paper}>
-        <Button>Dodaj komponentu</Button>
+        <Button variant={'contained'}>Dodaj komponentu</Button>
       </TableContainer>
     </>
   );

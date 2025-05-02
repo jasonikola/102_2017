@@ -20,7 +20,7 @@ function Groups() {
       const newThemes: any[] = [];
       setGroups(groups);
       groups.forEach((group: any) => {
-        newThemes.push(group.theme ? group.theme : noTheme);
+        newThemes.unshift(group.theme ? group.theme : noTheme);
       });
       setSelectedThemes(newThemes);
     });

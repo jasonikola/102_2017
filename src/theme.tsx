@@ -20,7 +20,18 @@ export const theme = createTheme({
           margin: '4px 0'
         }
       },
-    }
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        head: {
+          fontWeight: 'bold',
+          color: '#00979D'
+        },
+        root: {
+          padding: '4px 8px',
+        },
+      }
+    },
   },
   typography: {
     button: {
