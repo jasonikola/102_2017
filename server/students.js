@@ -4,6 +4,7 @@ const { connectToDatabase } = require("./DatabaseConnection");
 const router = express.Router();
 
 router.put('/add', async (req, res) => {
+  console.log("students/add call");
   const { index, firstName, lastName } = req.body;
 
   if (!index || !firstName || !lastName) {
@@ -25,7 +26,7 @@ router.put('/add', async (req, res) => {
       res.status(200).json(dataWithoutId);
     }
   } catch (e) {
-    res.status(500);
+    res.status(500).send('Internal server error');
   }
 });
 
@@ -48,7 +49,7 @@ router.get('/get', async (req, res) => {
         points: student.points
       };
     });
-    res.status(200).send(returnValue);
+    res.status(200).json(returnValue);
   } catch (error) {
     res.status(500).send({ error: 'Internal Server Error' });
   }

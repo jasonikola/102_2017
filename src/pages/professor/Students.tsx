@@ -66,7 +66,7 @@ function Students() {
     setStudents(updatedStudents);
   }
 
-  const handleOnClick = () => {
+  const openAddStudentDialog = () => {
     setAddStudentOpen(true);
   }
 
@@ -99,7 +99,7 @@ function Students() {
   return (
     <>
       <TableContainer component={Paper}>
-        <Button variant={'contained'} onClick={handleOnClick}>
+        <Button variant={'contained'} onClick={openAddStudentDialog}>
           Dodaj studenta
         </Button>
         <Table>
@@ -144,9 +144,7 @@ function Students() {
       <AddStudent
         open={addStudentOpen}
         closeAndRefresh={closeAndRefresh}
-        onClose={() => {
-          setAddStudentOpen(false)
-        }} />
+        onClose={() => setAddStudentOpen(false)} />
     </>
   );
 }
