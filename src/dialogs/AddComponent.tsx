@@ -38,9 +38,11 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
           'Content-Type': 'multipart/form-data'
         }
       });
-      // TODO
-      console.log('Upload successful:', response.data);
-      props.closeAndRefresh(response.data);
+
+      if(response.status === 200 && response.data) {
+        resetValues();
+        props.closeAndRefresh(response.data);
+      }
     } catch (e) {
       console.error(e);
       // TODO add warning
@@ -48,7 +50,7 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
   };
 
   const checkButtonDisable = () => {
-    return !name || !image;
+    return !name || !image ||  quantity <= 0 || !quantity;
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,11 +60,26 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
   };
 
   const handleQuantityChange = (value: any) => {
-    let numberValue = parseInt(value);
-    if (isNaN(numberValue)) {
-      numberValue = 0;
+    if (value === '') {
+      setQuantity(value);
+      return;
     }
-    setQuantity(numberValue);
+
+    const numberValue = parseInt(value);
+    if (!isNaN(numberValue)) {
+      setQuantity(numberValue);
+    }
+  }
+
+  const closeDialog = () => {
+    resetValues();
+    props.onClose();
+  }
+
+  const resetValues = () => {
+    setName('');
+    setQuantity(0);
+    setImage(null);
   }
 
   return (
@@ -123,9 +140,9 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
           variant={'contained'}
           disabled={checkButtonDisable()}
         >
-          Dodaj komponentu
+          Dodaj
         </Button>
-        <Button onClick={props.onClose} variant={'text'}>
+        <Button onClick={closeDialog} variant={'text'}>
           Zatvori
         </Button>
       </DialogActions>

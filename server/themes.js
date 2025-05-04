@@ -30,8 +30,8 @@ router.put('/add', async (req, res) => {
   }
 });
 
-router.get('/get', async (req, res) => {
-  console.log('/themes/get call');
+router.get('/', async (req, res) => {
+  console.log('/themes get call');
   try {
    const db = await connectToDatabase();
    const themesCollection = await db.collection('themes');

@@ -30,8 +30,8 @@ router.put('/add', async (req, res) => {
   }
 });
 
-router.get('/get', async (req, res) => {
-  console.log('/groups/get call');
+router.get('/', async (req, res) => {
+  console.log('/groups get call');
   try {
     const db = await connectToDatabase();
     const groupsCollection = await db.collection('groups');

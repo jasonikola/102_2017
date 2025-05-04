@@ -74,7 +74,7 @@ function Groups() {
     updatedSelectedThemes[index] = themeName;
     setSelectedThemes(updatedSelectedThemes);
 
-    const updatedThemes = themes.map((theme: any) => {
+    const updatedThemes = themes?.map((theme: any) => {
       if (theme.name === themeName) {
         theme.group = groupName;
       }
@@ -139,7 +139,7 @@ function Groups() {
                   displayEmpty
                 >
                   <MenuItem value={noTheme}>{noTheme}</MenuItem>
-                  {themes.map((theme: any) => (
+                  {themes?.map((theme: any) => (
                     <MenuItem
                       key={`menuItem${theme.name}`}
                       value={theme.name}

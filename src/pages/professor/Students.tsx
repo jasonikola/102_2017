@@ -38,7 +38,7 @@ function Students() {
 
   const getStudents = async () => {
     try {
-      const response = await axios.get('/students/get');
+      const response = await axios.get('/students');
 
       if (response.status === 200) {
         return response.data;

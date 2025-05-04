@@ -30,9 +30,9 @@ router.put('/add', async (req, res) => {
   }
 });
 
-router.get('/get', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    console.log('/students/get call');
+    console.log('/students get call');
     const db = await connectToDatabase();
     const usersCollection = db.collection('students');
     const studentsCursor = usersCollection.find();

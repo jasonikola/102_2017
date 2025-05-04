@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { connectToDatabase } = require("./DatabaseConnection");
+const { ObjectId } = require('mongodb');
 
 const router = express.Router();
 
@@ -36,8 +37,9 @@ router.post('/add', upload.single('image'), async (req, res) => {
     const componentsCollection = await db.collection('components');
 
     const fileName = file.filename;
+    const safeName = name.replace(/[<>:"/\\|?*]/g, '-');
     const ext = path.extname(file.originalname);
-    const newFileName = `${Date.now()}-${name}${ext}`;
+    const newFileName = `${Date.now()}-${safeName}${ext}`;
     const oldPath = path.join(uploadDir, fileName);
     const newPath = path.join(uploadDir, newFileName);
     fs.renameSync(oldPath, newPath);
@@ -50,15 +52,14 @@ router.post('/add', upload.single('image'), async (req, res) => {
       image: imagePath
     }
     await componentsCollection.insertOne(data);
-    const {_id, ...dataWithoutId} = data;
-    res.status(200).json(dataWithoutId);
+    res.status(200).json(data);
   } catch (e) {
     res.status(500).send('Internal server error');
   }
 });
 
-router.get('/get', async (req, res) => {
-  console.log('/components/get call');
+router.get('/', async (req, res) => {
+  console.log('/components get call');
   try {
     const db = await connectToDatabase();
     const componentsCollection = await db.collection('components');
@@ -69,6 +70,38 @@ router.get('/get', async (req, res) => {
     res.status(200).json(components);
   } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
+
+router.delete('/delete/:id', async (req, res) => {
+  console.log('/components/delete call');
+  const componentId = req.params.id;
+
+  if (!ObjectId.isValid(componentId)) {
+    console.log(componentId);
+    res.status(404).send('Nije validan id komponente.');
+  }
+
+  try {
+    const db = await connectToDatabase();
+    const componentsCollection = await db.collection('components');
+
+    const component = await componentsCollection.findOne({ _id: new ObjectId(componentId) });
+
+    if (!component) {
+      return res.status(404).json('Komponenta nije pronadjena.');
+    }
+
+    const imagePath = path.join(__dirname, component.image);
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+
+    await componentsCollection.deleteOne({ _id: new ObjectId(componentId) });
+
+    res.status(200).send('Komponente je obrisana.');
+  } catch (e) {
+    res.status(500).send( 'Internal server error' );
   }
 });
 

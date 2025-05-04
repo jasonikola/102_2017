@@ -16,7 +16,7 @@ function Components() {
 
   const getComponents = async () => {
     try {
-      const response = await axios.get('/components/get');
+      const response = await axios.get('/components');
       if (response.status === 200) {
         return response.data;
       }
@@ -32,6 +32,22 @@ function Components() {
 
   const closeAndRefresh = (component: any) => {
     setAddComponentOpen(false);
+    const updatedComponents = [...components];
+    updatedComponents.unshift(component);
+    setComponents(updatedComponents);
+  }
+
+  const deleteComponent = async (component: any) => {
+    try {
+      const response = await axios.delete(`/components/delete/${component._id}`);
+      if (response.status === 200) {
+        const updatedComponents = components.filter((c: any) => c._id !== component._id);
+        setComponents(updatedComponents);
+      }
+    } catch (e) {
+      console.log(e);
+      // TODO warrning
+    }
   }
 
   return (
@@ -49,6 +65,8 @@ function Components() {
             <TableCell></TableCell>
             <TableCell>Ime komponente</TableCell>
             <TableCell>Kolicina</TableCell>
+            <TableCell>Dodeljeno</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -64,6 +82,12 @@ function Components() {
                 </TableCell>
                 <TableCell>{component.name}</TableCell>
                 <TableCell>{component.quantity}</TableCell>
+                <TableCell>0 posto nije uradjeno</TableCell>
+                <TableCell>
+                  <Button variant={'text'} onClick={() => deleteComponent(component)}>
+                    Obrisi
+                  </Button>
+                </TableCell>
               </TableRow>
             ))
           }
