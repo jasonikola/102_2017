@@ -18,7 +18,7 @@ function Themes() {
 
   const getThemes = async () => {
     try {
-      const response = await axios.get('/themes/get');
+      const response = await axios.get('/themes');
       if (response.status === 200) {
         return response.data;
       }

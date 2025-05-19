@@ -10,6 +10,11 @@ class ApiService {
     const response = await axios.get('/themes');
     return response.data;
   }
+
+  static async getComponents() {
+    const response = await axios.get('/components');
+    return response.data;
+  }
 }
 
 export default ApiService;

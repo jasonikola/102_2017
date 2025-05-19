@@ -6,6 +6,7 @@ const studentsRoutes = require('./students');
 const groupsRoutes = require('./groups');
 const themesRoutes = require('./themes');
 const componentsRoutes = require('./components');
+const templatesRoutes = require('./templates');
 require('dotenv').config();
 
 const app = express();
@@ -18,6 +19,7 @@ app.use('/students', studentsRoutes);
 app.use('/groups', groupsRoutes);
 app.use('/themes', themesRoutes);
 app.use('/components', componentsRoutes);
+app.use('/templates', templatesRoutes);
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

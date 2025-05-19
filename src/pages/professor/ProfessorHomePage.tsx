@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import { Box, Tab, Tabs } from "@mui/material";
 import Groups from "./Groups";
 import Themes from "./Themes";
+import Templates from "./Templates";
 
 function ProfessorHomePage() {
 
@@ -18,11 +19,11 @@ function ProfessorHomePage() {
     groups: { number: 1, label: 'Grupe' },
     themes: { number: 2, label: 'Teme' },
     components: { number: 3, label: 'Komponente' },
-    schemes: { number: 4, label: 'Šabloni' }
+    templates: { number: 4, label: 'Šabloni' }
   };
 
   useEffect(() => {
-    let pathname: string = location.pathname.split('/')?.pop() || '';
+    let pathname: string = location.pathname.split('/')?.pop() ?? '';
     let tab: any = tabsData[pathname];
     if (tab) {
       setTabNumber(tab.number);
@@ -49,11 +50,12 @@ function ProfessorHomePage() {
           </Tabs>
         </Box>
         <Routes>
-          <Route path="/" element={<Navigate to={'./students'} replace={true} />} />
-          <Route path="/components" element={<Components />} />
-          <Route path="/students" element={<Students />} />
-          <Route path="/groups" element={<Groups />} />
-          <Route path="/themes" element={<Themes />} />
+          <Route path='/' element={<Navigate to={'./students'} replace={true} />} />
+          <Route path='/components' element={<Components />} />
+          <Route path='/students' element={<Students />} />
+          <Route path='/groups' element={<Groups />} />
+          <Route path='/themes' element={<Themes />} />
+          <Route path='/templates' element={<Templates />} />
         </Routes>
       </Box>
     </>

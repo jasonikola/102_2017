@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
 import AddComponent from "../../dialogs/AddComponent";
 import axios from "axios";
+import ApiService from "../../ApiService";
 
 // TODO add component model
 
@@ -16,10 +17,7 @@ function Components() {
 
   const getComponents = async () => {
     try {
-      const response = await axios.get('/components');
-      if (response.status === 200) {
-        return response.data;
-      }
+      return await ApiService.getComponents();
     } catch (e: any) {
       console.error(e);
       // TODO add warning dialog

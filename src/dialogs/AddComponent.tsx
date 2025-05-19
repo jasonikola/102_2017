@@ -62,11 +62,12 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
   const handleQuantityChange = (value: any) => {
     if (value === '') {
       setQuantity(value);
-      return;
-    }
-
-    const numberValue = parseInt(value);
-    if (!isNaN(numberValue)) {
+    } else {
+      let numberValue = parseInt(value);
+      // TODO check after update negative values
+      if (isNaN(numberValue) || numberValue < 0) {
+        numberValue = 0;
+      }
       setQuantity(numberValue);
     }
   }
