@@ -20,6 +20,7 @@ app.use('/groups', groupsRoutes);
 app.use('/themes', themesRoutes);
 app.use('/components', componentsRoutes);
 app.use('/templates', templatesRoutes);
+// TODO check for return of server calls
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

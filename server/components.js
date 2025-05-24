@@ -78,7 +78,6 @@ router.delete('/delete/:id', async (req, res) => {
   const componentId = req.params.id;
 
   if (!ObjectId.isValid(componentId)) {
-    console.log(componentId);
     res.status(404).send('Nije validan id komponente.');
   }
 

@@ -22,6 +22,7 @@ function ProfessorPage() {
 
     email && setEmail(email);
     password && setPassword(password);
+    email && password && setRememberMe(true);
   }, []);
 
   const onSubmitHandler = async (event: any) => {
@@ -86,9 +87,12 @@ function ProfessorPage() {
           />
           <FormControlLabel
             control={
-              <Checkbox value={rememberMe} color={'primary'}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-              />}
+              <Checkbox
+                value={rememberMe}
+                color={'primary'}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+            }
             label={'Zapamti me'}
           />
           <Button

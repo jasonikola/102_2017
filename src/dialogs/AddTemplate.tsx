@@ -17,27 +17,39 @@ interface AddTemplateProps {
   open: boolean;
   onClose: () => void;
   closeAndRefresh: (data: any) => void;
+  template?: any;
 }
 
 const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
   const [name, setName] = React.useState('');
   const [components, setComponents] = React.useState<any[]>([]);
+  const isEdit = !!props.template;
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    getComponents().then((components: any) => {
-      const newComponents = components.map((component: any) => {
-        return {
-          name: component.name,
-          checked: false,
-          quantity: 0,
-          _id: component._id,
-          image: component.image
-        }
+    const { template } = props;
+    if (isEdit) {
+      setName(template.name);
+      const updatedComponents = components.map((component: any) => {
+        const checkedComponent = template.components.find((checkedComponent: any) => component.name === checkedComponent.name);
+        return checkedComponent || component;
       });
-      setComponents(newComponents)
-    });
-  }, []);
+      setComponents(updatedComponents);
+    } else if (!components.length) {
+      getComponents().then((components: any) => {
+        const newComponents = components.map((component: any) => {
+          return {
+            name: component.name,
+            checked: false,
+            quantity: 1,
+            _id: component._id,
+            image: component.image
+          }
+        });
+        setComponents(newComponents)
+      });
+    }
+  }, [props.open]);
 
   const getComponents = async () => {
     try {
@@ -56,7 +68,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
     };
     try {
       const response = await axios.put('/templates/add', data);
-      if(response.status === 200 && response.data) {
+      if (response.status === 200 && response.data) {
         resetValues();
         props.closeAndRefresh(response.data);
       }
@@ -67,7 +79,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
   };
 
   const checkButtonDisable = () => {
-    return !name || !components.find((component: any) => component.checked) || components.find((component: any) => component.quantity === '');
+    return !name || !components.find((component: any) => component.checked) || components.find((component: any) => component.checked && !component.quantity);
   };
 
   const closeDialog = () => {
@@ -79,8 +91,9 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
     setName('');
     const newComponents = components.map((component: any) => {
       return {
+        _id: null,
         name: component.name,
-        quantity: 0,
+        quantity: 1,
         image: component.image,
         checked: false
       };
@@ -109,6 +122,34 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
     }
   }
 
+  const editTemplate = async () => {
+    const { _id } = props.template;
+    const checkedComponents = components.filter((component: any) => component.checked);
+    const data = {
+      name: name,
+      _id: _id,
+      components: checkedComponents,
+    };
+    try {
+      const response = await axios.put(`/templates/edit/${_id}`, data);
+      if (response.status === 200) {
+        resetValues();
+        props.closeAndRefresh(response.data);
+      }
+    } catch (e) {
+      console.error(e);
+      // TODO dialog
+    }
+  }
+
+  const submitTemplate = () => {
+    if (isEdit) {
+      editTemplate();
+    } else {
+      addTemplate();
+    }
+  }
+
   return (
     <Dialog open={props.open} onClose={props.onClose} maxWidth={'sm'} fullWidth>
       <DialogTitle>Dodaj šablon</DialogTitle>
@@ -130,7 +171,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
             {components.length > 0 &&
               components.map((component: any, index: number) => (
                 <Box
-                  key={component._id}
+                  key={component.name}
                   display={'flex'}
                   alignItems={'center'}
                   justifyContent={'space-between'}
@@ -177,11 +218,11 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={addTemplate}
+          onClick={submitTemplate}
           variant={'contained'}
           disabled={checkButtonDisable()}
         >
-          Dodaj
+          {isEdit ? 'Izmeni' : 'Dodaj'}
         </Button>
         <Button onClick={closeDialog} variant={'text'}>
           Zatvori
