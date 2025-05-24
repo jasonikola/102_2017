@@ -26,7 +26,7 @@ function Students() {
     getStudents().then((students: any) => {
       const newGroups: string[] = [];
       setStudents(students);
-      students.forEach((student: any) => {
+      students?.forEach((student: any) => {
         newGroups.unshift(student.group ? student.group : noGroup);
       });
       setSelectedGroups(newGroups);
@@ -112,8 +112,8 @@ function Students() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {students.map((student: any, index) => (
-              <TableRow key={`tableRow${index}`}>
+            {!!students?.length && students.map((student: any, index) => (
+              <TableRow key={`tableRow${student.name}`}>
                 <TableCell>{student.index}</TableCell>
                 <TableCell>{`${student.firstName} ${student.lastName}`}</TableCell>
                 <TableCell>

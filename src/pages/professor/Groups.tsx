@@ -19,7 +19,7 @@ function Groups() {
     getGroups().then((groups: any) => {
       const newThemes: any[] = [];
       setGroups(groups);
-      groups.forEach((group: any) => {
+      groups?.forEach((group: any) => {
         newThemes.unshift(group.theme ? group.theme : noTheme);
       });
       setSelectedThemes(newThemes);
@@ -121,7 +121,7 @@ function Groups() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {groups?.map((group: any, index: number) => (
+          {!!groups?.length && groups.map((group: any, index: number) => (
             <TableRow key={`tableRow${group.name}`}>
               <TableCell>{group.name}</TableCell>
               <TableCell>

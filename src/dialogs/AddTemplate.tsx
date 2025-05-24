@@ -37,7 +37,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
       setComponents(updatedComponents);
     } else if (!components.length) {
       getComponents().then((components: any) => {
-        const newComponents = components.map((component: any) => {
+        const newComponents = components?.map((component: any) => {
           return {
             name: component.name,
             checked: false,
@@ -89,7 +89,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
 
   const resetValues = () => {
     setName('');
-    const newComponents = components.map((component: any) => {
+    const newComponents = components?.map((component: any) => {
       return {
         _id: null,
         name: component.name,
@@ -168,7 +168,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
             />
           </Box>
           <Box display={'flex'} flexDirection={'column'} gap={2}>
-            {components.length > 0 &&
+            {!!components?.length &&
               components.map((component: any, index: number) => (
                 <Box
                   key={component.name}

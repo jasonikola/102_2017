@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
 import AddComponent from "../../dialogs/AddComponent";
 import axios from "axios";
 import ApiService from "../../ApiService";
@@ -57,39 +57,40 @@ function Components() {
         >
           Dodaj komponentu
         </Button>
-
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>Ime komponente</TableCell>
-            <TableCell>Kolicina</TableCell>
-            <TableCell>Dodeljeno</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {
-            components?.map((component, index) => (
-              <TableRow key={`tableRow${component?.name}`}>
-                <TableCell>
-                  <img
-                    src={`${API_URL}/${component.image}`}
-                    alt={component.name}
-                    style={{ maxWidth: '100px', height: 'auto', borderRadius: 4 }}
-                  />
-                </TableCell>
-                <TableCell>{component.name}</TableCell>
-                <TableCell>{component.quantity}</TableCell>
-                <TableCell>0 posto nije uradjeno</TableCell>
-                <TableCell>
-                  <Button variant={'text'} onClick={() => deleteComponent(component)}>
-                    Obrisi
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))
-          }
-        </TableBody>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>Ime komponente</TableCell>
+              <TableCell>Kolicina</TableCell>
+              <TableCell>Dodeljeno</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+              !!components?.length && components.map((component, index) => (
+                <TableRow key={`tableRow${component?.name}`}>
+                  <TableCell>
+                    <img
+                      src={`${API_URL}/${component.image}`}
+                      alt={component.name}
+                      style={{ maxWidth: '100px', height: 'auto', borderRadius: 4 }}
+                    />
+                  </TableCell>
+                  <TableCell>{component.name}</TableCell>
+                  <TableCell>{component.quantity}</TableCell>
+                  <TableCell>0 posto nije uradjeno</TableCell>
+                  <TableCell>
+                    <Button variant={'text'} onClick={() => deleteComponent(component)}>
+                      Obrisi
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            }
+          </TableBody>
+        </Table>
       </TableContainer>
 
       <AddComponent

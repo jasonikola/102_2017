@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Paper, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
 import FormInput from "../../components/FormInput";
 import axios from "axios";
 
@@ -50,7 +50,7 @@ function Themes() {
 
   const disableButton = () => {
     // TODO add regex
-    return newTheme.length === 0;
+    return newTheme?.length === 0;
   }
 
   return (
@@ -63,22 +63,24 @@ function Themes() {
         disabled={disableButton()}
         title={'Dodaj novu temu'}
       />
-      <TableHead>
-        <TableRow>
-          <TableCell>Ime teme</TableCell>
-          <TableCell>Dodeljena grupi</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {
-          themes?.map((theme: any) => (
-            <TableRow key={theme.name}>
-              <TableCell>{theme.name}</TableCell>
-              <TableCell>{theme.group ? theme.group : 'Nije dodeljeno grupi'}</TableCell>
-            </TableRow>
-          ))
-        }
-      </TableBody>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Ime teme</TableCell>
+            <TableCell>Dodeljena grupi</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            !!themes?.length && themes?.map((theme: any) => (
+              <TableRow key={theme.name}>
+                <TableCell>{theme.name}</TableCell>
+                <TableCell>{theme.group ? theme.group : 'Nije dodeljeno grupi'}</TableCell>
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
     </TableContainer>
   );
 }

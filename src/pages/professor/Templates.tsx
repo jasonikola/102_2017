@@ -46,7 +46,7 @@ function Templates() {
     setAddTemplateOpen(false);
     let updatedTemplates = [...templates];
     if (templateToEdit) {
-      updatedTemplates = updatedTemplates.map((t: any) => {
+      updatedTemplates = updatedTemplates?.map((t: any) => {
         if (template._id === t._id) {
           t.name = template.name;
           t.components = template.components;
@@ -99,8 +99,8 @@ function Templates() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {templates?.length > 0 && templates?.map((template: any) => (
-              template.components?.map((component: any, index: number) => (
+            {!!templates?.length && templates?.map((template: any) => (
+              !!template?.components?.length && template?.components?.map((component: any, index: number) => (
                 <TableRow key={`template-${template._id}-component-${index}`}>
                   {index === 0 && (
                     <TableCell rowSpan={template.components.length}>
