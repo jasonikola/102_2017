@@ -80,7 +80,7 @@ function Components() {
                   </TableCell>
                   <TableCell>{component.name}</TableCell>
                   <TableCell>{component.quantity}</TableCell>
-                  <TableCell>0 posto nije uradjeno</TableCell>
+                  <TableCell>{component.assigned}</TableCell>
                   <TableCell>
                     <Button variant={'text'} onClick={() => deleteComponent(component)}>
                       Obrisi

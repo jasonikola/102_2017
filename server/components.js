@@ -49,7 +49,8 @@ router.post('/add', upload.single('image'), async (req, res) => {
     const data = {
       name,
       quantity: parseInt(quantity),
-      image: imagePath
+      image: imagePath,
+      assigned: 0
     }
     await componentsCollection.insertOne(data);
     res.status(200).json(data);

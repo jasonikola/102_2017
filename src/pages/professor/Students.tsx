@@ -113,7 +113,7 @@ function Students() {
           </TableHead>
           <TableBody>
             {!!students?.length && students.map((student: any, index) => (
-              <TableRow key={`tableRow${student.name}`}>
+              <TableRow key={`tableRow${student.index}`}>
                 <TableCell>{student.index}</TableCell>
                 <TableCell>{`${student.firstName} ${student.lastName}`}</TableCell>
                 <TableCell>
@@ -124,7 +124,7 @@ function Students() {
                   >
                     <MenuItem value={noGroup}>{noGroup}</MenuItem>
                     {groups.map((group: any) => (
-                      <MenuItem key={group} value={group}>
+                      <MenuItem key={`${student}-${group}`} value={group}>
                         {group}
                       </MenuItem>
                     ))}

@@ -29,6 +29,8 @@ export const theme = createTheme({
         },
         root: {
           padding: '4px 8px',
+          verticalAlign: 'top',
+          horizontalAlign: 'center',
         },
       }
     },

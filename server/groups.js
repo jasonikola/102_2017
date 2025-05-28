@@ -48,9 +48,8 @@ router.get('/', async (req, res) => {
         });
 
         return {
-          name: group.name,
-          members: members,
-          theme: group.theme
+          ...group,
+          members: members
         };
       })
     );

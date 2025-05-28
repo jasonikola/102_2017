@@ -62,6 +62,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
 
   const addTemplate = async () => {
     const checkedComponents = components.filter((component: any) => component.checked);
+    debugger
     const data = {
       name: name,
       components: checkedComponents

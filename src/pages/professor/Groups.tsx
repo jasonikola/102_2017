@@ -7,12 +7,15 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import FormInput from "../../components/FormInput";
 import ApiService from "../../ApiService";
+import GroupComponents from "../../dialogs/GroupComponents";
 
 function Groups() {
   const [newGroup, setNewGroup] = React.useState('');
   const [groups, setGroups] = React.useState<any[]>([]);
   const [themes, setThemes] = React.useState<any[]>([]);
   const [selectedThemes, setSelectedThemes] = React.useState<any[]>([]);
+  const [componentsDialogOpen, setComponentsDialogOpen] = React.useState(false);
+  const [selectedGroup, setSelectedGroup] = React.useState<any>();
   const noTheme = 'Bez teme'
 
   useEffect(() => {
@@ -101,70 +104,124 @@ function Groups() {
     }
   }
 
+  const openComponentsDialog = (group: any) => {
+    setSelectedGroup(group);
+    setComponentsDialogOpen(true);
+  }
+
+  const selectThemeComponent = (group: any, index: number) => (
+    <Select
+      value={selectedThemes[index]}
+      onChange={(e: any) => handleThemeChange(index, e.target.value, group.name)}
+      fullWidth
+      displayEmpty
+    >
+      <MenuItem value={noTheme}>{noTheme}</MenuItem>
+      {themes?.map((theme: any) => (
+        <MenuItem
+          key={`menuItem${theme.name}`}
+          value={theme.name}
+          disabled={!!theme.group && group.name !== theme.group}
+          sx={{
+            ...(theme.group && {
+              color: 'text.disabled',
+            }),
+          }}
+        >
+          {theme.name}
+        </MenuItem>
+      ))}
+    </Select>
+  );
+
+  const onCloseGroupComponentsDialog = () => {
+    setSelectedGroup(null);
+    setComponentsDialogOpen(false);
+  }
+
+  const componentsButtonComponent = (group: any) => (
+    <Button
+      variant={'text'}
+      onClick={() => {
+        openComponentsDialog(group);
+      }}
+    >
+      Komponente: {group.components.length}
+    </Button>
+  );
+
   return (
-    <TableContainer component={Paper}>
-      <FormInput
-        onSubmit={onSubmitHandler}
-        onChange={(e) => setNewGroup(e.target.value)}
-        onClick={onSubmitHandler}
-        value={newGroup}
-        disabled={disableButton()}
-        title={'Dodaj novu grupu'}
-      />
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Ime grupe</TableCell>
-            <TableCell>Clanovi</TableCell>
-            <TableCell>Tema za seminarski</TableCell>
-            <TableCell>Komponente</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!!groups?.length && groups.map((group: any, index: number) => (
-            <TableRow key={`tableRow${group.name}`}>
-              <TableCell>{group.name}</TableCell>
-              <TableCell>
-                {
-                  !group.members?.length ? 'Grupa nema clanova' : group.members.map((member: any) => (
-                    <div key={`${member}Div`}>{member}</div>
-                  ))
-                }
-              </TableCell>
-              <TableCell>
-                <Select
-                  value={selectedThemes[index]}
-                  onChange={(e: any) => handleThemeChange(index, e.target.value, group.name)}
-                  fullWidth
-                  displayEmpty
-                >
-                  <MenuItem value={noTheme}>{noTheme}</MenuItem>
-                  {themes?.map((theme: any) => (
-                    <MenuItem
-                      key={`menuItem${theme.name}`}
-                      value={theme.name}
-                      disabled={!!theme.group && group.name !== theme.group}
-                      sx={{
-                        ...(theme.group && {
-                          color: 'text.disabled',
-                        }),
-                      }}
-                    >
-                      {theme.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </TableCell>
-              <TableCell>
-                <Button variant={'text'}>
-                  Komponente
-                </Button>
-              </TableCell>
+    <>
+      <TableContainer component={Paper}>
+        <FormInput
+          onSubmit={onSubmitHandler}
+          onChange={(e) => setNewGroup(e.target.value)}
+          onClick={onSubmitHandler}
+          value={newGroup}
+          disabled={disableButton()}
+          title={'Dodaj novu grupu'}
+        />
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Ime grupe</TableCell>
+              <TableCell>Clanovi</TableCell>
+              <TableCell>Tema za seminarski</TableCell>
+              <TableCell>Komponente</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {!!groups?.length && groups.map((group: any, index: number) => (
+              !!group.members.length ? group.members.map((member: any, memberIndex: number) => {
+                const rowSpan = group.members.length;
+                const firstRow = memberIndex === 0;
+                return (
+                  <TableRow key={`tableRow${group.name}${member}`}>
+                    {firstRow && (
+                      <TableCell rowSpan={rowSpan}>
+                        {group.name}
+                      </TableCell>
+                    )}
+
+                    <TableCell>
+                      {member}
+                    </TableCell>
+                    {firstRow && (
+                      <>
+                        <TableCell rowSpan={rowSpan}>
+                          {selectThemeComponent(group, index)}
+                        </TableCell>
+                        <TableCell rowSpan={rowSpan}>
+                          {componentsButtonComponent(group)}
+                        </TableCell>
+                      </>
+                    )}
+                  </TableRow>
+                )
+              }) : (
+                // There is no members
+                <TableRow>
+                  <TableCell>{group.name}</TableCell>
+                  <TableCell>Grupa nema clanova</TableCell>
+                  <TableCell>
+                    {selectThemeComponent(group, index)}
+                  </TableCell>
+                  <TableCell>
+                    {componentsButtonComponent(group)}
+                  </TableCell>
+                </TableRow>
+              )
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <GroupComponents
+        open={componentsDialogOpen}
+        onClose={onCloseGroupComponentsDialog}
+        group={selectedGroup}
+      />
+    </>
   );
 }
 

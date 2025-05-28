@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import AddTemplate from "../../dialogs/AddTemplate";
 import axios from "axios";
+import ApiService from "../../ApiService";
 
 function Templates() {
   const [templates, setTemplates] = useState<any[]>([]);
@@ -20,17 +21,12 @@ function Templates() {
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    getTemplates().then((templates: any) => {
-      setTemplates(templates)
-    });
+    getTemplates().then((templates: any) => setTemplates(templates));
   }, []);
 
   const getTemplates = async () => {
     try {
-      const response = await axios.get('/templates');
-      if (response.status === 200) {
-        return response.data;
-      }
+      return await ApiService.getTemplates();
     } catch (e) {
       // TODO
       console.error(e);
@@ -104,17 +100,7 @@ function Templates() {
                 <TableRow key={`template-${template._id}-component-${index}`}>
                   {index === 0 && (
                     <TableCell rowSpan={template.components.length}>
-                      <Typography
-                        sx={{
-                          fontWeight: 600,
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          maxWidth: 150,
-                        }}
-                      >
-                        {template.name}
-                      </Typography>
+                      {template.name}
                     </TableCell>
                   )}
 
