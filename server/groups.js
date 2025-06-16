@@ -1,5 +1,6 @@
 const express = require('express');
 const { connectToDatabase } = require("./DatabaseConnection");
+const { ObjectId } = require("mongodb");
 
 const router = express.Router();
 
@@ -70,7 +71,8 @@ router.post('/assignTheme', async (req, res) => {
   try {
     const db = await connectToDatabase();
     const groupsCollection = db.collection('groups');
-    const group = await groupsCollection.findOne({ name: themeName });
+    const group = await groupsCollection.findOne({ name: groupName });
+    // TODO check after templateName -> groupName change
     const themesCollection = db.collection('themes');
     const theme = await themesCollection.findOne({ name: themeName });
 
@@ -86,6 +88,74 @@ router.post('/assignTheme', async (req, res) => {
     } else {
       res.status(400).json("Došlo je do greške, pokušajte ponovo.");
     }
+  } catch (e) {
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/assignComponents', async (req, res) => {
+  console.log('/groups/assignComponents call');
+  const { _id, components } = req.body;
+  if (!_id || !components) {
+    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+  }
+
+  if (!ObjectId.isValid(_id)) {
+    res.status(404).send('Nije validan id grupe.');
+  }
+
+  try {
+    const db = await connectToDatabase();
+    const groupsCollection = db.collection('groups');
+    const group = await groupsCollection.findOne({ _id: new ObjectId(_id) });
+
+    if (!group) {
+      res.status(404).send('Grupa ne postoji.');
+    }
+
+    const componentsCollection = db.collection('components');
+    const componentsCursor = await componentsCollection.find();
+    const allComponents = await componentsCursor.toArray();
+    let groupComponents = group.components;
+
+    for (const groupComponent of groupComponents) {
+      const stillExists = components.find(component => component._id.toString() === groupComponent._id.toString());
+      if (!stillExists) {
+        const globalComponent = allComponents.find(gc => gc._id.toString() === groupComponent._id.toString());
+        if (globalComponent) {
+          globalComponent.assigned -= groupComponent.quantity;
+          await componentsCollection.updateOne({ _id: new ObjectId(globalComponent._id) }, { $inc: { assigned: -globalComponent.quantity } });
+        } else {
+          res.status(404).send('Komponenta ne postoji.');
+        }
+      }
+    }
+
+    groupComponents = groupComponents.filter(groupComponent => components.some(component => component._id.toString() === groupComponent._id.toString()));
+    group.components = groupComponents;
+
+    for (const component of components) {
+      let decrement = 0;
+      const groupComponent = groupComponents.find((gComponent) => gComponent._id.toString() === component._id.toString());
+      if (groupComponent) {
+        decrement = groupComponent.quantity;
+        groupComponent.quantity = component.quantity;
+      } else {
+        group.components.push(component);
+      }
+      const componentGlobal = allComponents.find((aComponent) => aComponent._id.toString() === component._id.toString());
+      if (!componentGlobal) {
+        res.status(404).send('Komponenta ne postoji.');
+      }
+      componentGlobal.assigned -= decrement;
+      componentGlobal.assigned += component.quantity;
+console.log(componentGlobal);
+      await componentsCollection.updateOne({ _id: new ObjectId(componentGlobal._id) }, { $set: { assigned: componentGlobal.assigned } });
+    }
+
+    await groupsCollection.updateOne({ _id: new ObjectId(_id) }, { $set: { components: group.components } });
+
+    res.status(200).json(group);
   } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });
   }

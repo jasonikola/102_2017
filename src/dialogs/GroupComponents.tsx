@@ -8,19 +8,22 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import ApiService from "../ApiService";
+import axios from "axios";
 
 interface GroupComponentsProps {
   open: boolean;
-  onClose: () => void;
+  onClose: (group: any) => void;
   group: any;
 }
 
 const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps) => {
   const [components, setComponents] = React.useState<any[]>([]);
   const [templates, setTemplates] = React.useState<any[]>([]);
+  const [returnValue, setReturnValue] = React.useState<any>(null);
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
+    const { group } = props;
     if (!components?.length) {
       getComponents().then((components: any[]) => {
         const newComponents = components?.map((component: any) => {
@@ -48,6 +51,19 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
         setTemplates(newTemplates)
       });
     }
+
+    if (group) {
+      const groupComponents: any[] = group.components;
+      const updatedComponents = [...components];
+      groupComponents.forEach((component: any) => {
+        const updatedComponent = updatedComponents.find((x: any) => x._id.toString() === component._id.toString());
+        if (updatedComponent) {
+          updatedComponent.checked = true;
+          updatedComponent.quantity = component.quantity;
+        }
+      });
+      setComponents(updatedComponents);
+    }
   }, [props.open]);
 
   const getComponents = async () => {
@@ -72,6 +88,15 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
     const updatedComponents = [...components];
     updatedComponents[index].checked = !updatedComponents[index].checked;
     setComponents(updatedComponents);
+
+    const checkedTemplate = templates.find((template) => template.checked);
+    if (checkedTemplate) {
+      const updatedTemplates = templates.map((template) => ({
+        ...template,
+        checked: false
+      }));
+      setTemplates(updatedTemplates);
+    }
   }
 
   const handleTemplateCheckboxChange = (index: number) => {
@@ -124,8 +149,51 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
     }
   }
 
+  const assignComponents = async () => {
+    const { group } = props;
+    const checkedComponents = components.filter((component: any) => component.checked);
+    const cleanedComponents = checkedComponents.map(({ checked, totalQuantity, assigned, ...rest }) => rest);
+
+    const data = {
+      _id: group._id,
+      components: cleanedComponents
+    };
+
+    try {
+      const response = await axios.post('/groups/assignComponents', data);
+      if (response?.status === 200 && response.data) {
+        setReturnValue(response.data);
+      }
+    } catch (e) {
+      console.error(e);
+      // TODO error
+    }
+  }
+
   const closeDialog = () => {
-    props.onClose();
+    resetValues();
+    props.onClose(returnValue);
+  }
+
+  const disableSaveButton = () => {
+    const invalidQuantity = components?.find((component: any) => component.checked && component.quantity > (component.totalQuantity - component.assigned));
+    return !!invalidQuantity;
+  }
+
+  const resetValues = () => {
+    const updatedTemplates = templates.map((template) => ({
+      ...template,
+      checked: false
+    }));
+    const updatedComponents = components.map((component) => ({
+      ...component,
+      quantity: 1,
+      checked: false
+    }));
+
+    setComponents(updatedComponents);
+    setTemplates(updatedTemplates);
+    setReturnValue(null);
   }
 
   return <Dialog open={props.open} onClose={props.onClose}>
@@ -230,6 +298,8 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
     <DialogActions>
       <Button
         variant={'contained'}
+        onClick={assignComponents}
+        disabled={disableSaveButton()}
       >
         Sacuvaj
       </Button>

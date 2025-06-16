@@ -134,9 +134,20 @@ function Groups() {
     </Select>
   );
 
-  const onCloseGroupComponentsDialog = () => {
+  const onCloseGroupComponentsDialog = (group: any) => {
     setSelectedGroup(null);
     setComponentsDialogOpen(false);
+
+    if (group) {
+      const updatedGroups: any[] = groups.map((g: any) => {
+        if (group._id === g._id) {
+          return group;
+        } else {
+          return g;
+        }
+      });
+      setGroups(updatedGroups);
+    }
   }
 
   const componentsButtonComponent = (group: any) => (
@@ -200,7 +211,7 @@ function Groups() {
                 )
               }) : (
                 // There is no members
-                <TableRow>
+                <TableRow key={`noMembers-${group.name}`}>
                   <TableCell>{group.name}</TableCell>
                   <TableCell>Grupa nema clanova</TableCell>
                   <TableCell>

@@ -7,8 +7,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Typography,
+  TableRow
 } from "@mui/material";
 import AddTemplate from "../../dialogs/AddTemplate";
 import axios from "axios";
