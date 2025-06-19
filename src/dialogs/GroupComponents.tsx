@@ -4,11 +4,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle, TextField, Typography
+  DialogTitle,
+  TextField,
+  Typography,
+  IconButton, Tooltip
 } from "@mui/material";
 import React, { useEffect } from "react";
 import ApiService from "../ApiService";
 import axios from "axios";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface GroupComponentsProps {
   open: boolean;
@@ -18,18 +22,20 @@ interface GroupComponentsProps {
 
 const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps) => {
   const [components, setComponents] = React.useState<any[]>([]);
+  const [allComponents, setAllComponents] = React.useState<any[]>([]);
   const [templates, setTemplates] = React.useState<any[]>([]);
+  const [selectedTemplateIndex, setSelectedTemplateIndex] = React.useState(-1);
   const [returnValue, setReturnValue] = React.useState<any>(null);
+  const [addComponentButton, setAddComponentButton] = React.useState(true);
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const { group } = props;
-    if (!components?.length) {
+    if (!allComponents?.length) {
       getComponents().then((components: any[]) => {
         const newComponents = components?.map((component: any) => {
           return {
             name: component.name,
-            checked: false,
             quantity: 1,
             totalQuantity: component.quantity,
             _id: component._id,
@@ -37,29 +43,28 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
             assigned: component.assigned
           }
         });
-        setComponents(newComponents)
+        setAllComponents(newComponents)
       });
     }
     if (!templates?.length) {
       getTemplates().then((templates: any) => {
         const newTemplates = templates?.map((template: any) => ({
           name: template.name,
-          checked: false,
           _id: template._id,
-          components: template.components
+          components: template.components,
         }));
         setTemplates(newTemplates)
       });
     }
 
-    if (group) {
-      const groupComponents: any[] = group.components;
-      const updatedComponents = [...components];
-      groupComponents.forEach((component: any) => {
-        const updatedComponent = updatedComponents.find((x: any) => x._id.toString() === component._id.toString());
-        if (updatedComponent) {
-          updatedComponent.checked = true;
-          updatedComponent.quantity = component.quantity;
+    if (group?.components?.length) {
+      const updatedComponents = group.components.map((component: any) => {
+        const globalComponent = allComponents.find((c: any) => c._id.toString() === component._id.toString());
+        return {
+          ...component,
+          totalQuantity: globalComponent?.totalQuantity || 0,
+          assigned: globalComponent?.assigned || 0,
+          maxQuantity: globalComponent?.totalQuantity - globalComponent.assigned + component.quantity
         }
       });
       setComponents(updatedComponents);
@@ -84,57 +89,29 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
     }
   }
 
-  const handleComponentCheckboxChange = (index: number) => {
-    const updatedComponents = [...components];
-    updatedComponents[index].checked = !updatedComponents[index].checked;
-    setComponents(updatedComponents);
-
-    const checkedTemplate = templates.find((template) => template.checked);
-    if (checkedTemplate) {
-      const updatedTemplates = templates.map((template) => ({
-        ...template,
-        checked: false
-      }));
-      setTemplates(updatedTemplates);
-    }
-  }
-
-  const handleTemplateCheckboxChange = (index: number) => {
-    const value = !templates[index].checked;
-    const updatedTemplates = templates.map((template, i) => ({
-      ...template,
-      checked: i === index ? !template.checked : false,
-    }));
-    setTemplates(updatedTemplates);
-    let updatedComponents;
-    if (value) {
-      updatedComponents = components.map((component: any) => {
-        const templateComponent = templates[index].components.find((templateC: any) => templateC._id === component._id);
-        if (templateComponent) {
-          return {
-            ...component,
-            quantity: templateComponent.quantity,
-            checked: true
-          }
-        } else {
-          return {
-            ...component,
-            quantity: 1,
-            checked: false
-          }
+  const handleTemplateButtonClick = (index: number) => {
+    const newValue = selectedTemplateIndex !== index;
+    if (newValue && index !== -1) {
+      const { components } = templates[index];
+      const updatedComponents = components.map((component: any) => {
+        const globalComponent = allComponents.find((c: any) => c._id.toString() === component._id.toString());
+        return {
+          name: component.name,
+          quantity: 1,
+          _id: component._id,
+          image: component.image,
+          totalQuantity: globalComponent.totalQuantity,
+          assigned: globalComponent.assigned,
+          maxQuantity: globalComponent.totalQuantity - globalComponent.assigned,
         }
       });
-    } else {
-      updatedComponents = components.map((component) => ({
-        ...component,
-        quantity: 1,
-        checked: false
-      }));
+      setComponents(updatedComponents);
     }
-    setComponents(updatedComponents);
+
+    setSelectedTemplateIndex((prevIndex: any) => (newValue ? index : -1));
   }
 
-  const handleQuantityChange = (index: number, value: string) => {
+  const handleQuantityChange = (index: number, value: string, maxAvailable: number) => {
     const updatedComponents = [...components];
     if (value === '') {
       updatedComponents[index].quantity = value;
@@ -143,6 +120,8 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
       let newValue = parseInt(value);
       if (newValue < 0 || isNaN(newValue)) {
         newValue = 0;
+      } else if (newValue > maxAvailable) {
+        newValue = maxAvailable;
       }
       updatedComponents[index].quantity = newValue;
       setComponents(updatedComponents);
@@ -151,12 +130,10 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
 
   const assignComponents = async () => {
     const { group } = props;
-    const checkedComponents = components.filter((component: any) => component.checked);
-    const cleanedComponents = checkedComponents.map(({ checked, totalQuantity, assigned, ...rest }) => rest);
 
     const data = {
       _id: group._id,
-      components: cleanedComponents
+      components: components
     };
 
     try {
@@ -176,24 +153,44 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
   }
 
   const disableSaveButton = () => {
-    const invalidQuantity = components?.find((component: any) => component.checked && component.quantity > (component.totalQuantity - component.assigned));
-    return !!invalidQuantity;
+    return !components?.length;
   }
 
   const resetValues = () => {
     const updatedTemplates = templates.map((template) => ({
-      ...template,
-      checked: false
-    }));
-    const updatedComponents = components.map((component) => ({
-      ...component,
-      quantity: 1,
-      checked: false
+      ...template
     }));
 
-    setComponents(updatedComponents);
+    setComponents([]);
+    setAllComponents([]);
     setTemplates(updatedTemplates);
+    setSelectedTemplateIndex(-1);
     setReturnValue(null);
+    setAddComponentButton(true);
+  }
+
+  const remainingComponents = allComponents.filter(ac =>
+    !components.some(c => c._id.toString() === ac._id.toString())
+  );
+
+  const addComponent = (component: any) => {
+    setAddComponentButton(true);
+    setSelectedTemplateIndex(-1);
+    const updatedComponents = [...components, {
+      name: component.name,
+      quantity: 1,
+      _id: component._id,
+      image: component.image,
+      totalQuantity: component.totalQuantity,
+      assigned: component.assigned,
+      maxQuantity: component.totalQuantity - component.assigned,
+    }];
+    setComponents(updatedComponents);
+  };
+
+  const deleteComponent = (component: any) => {
+    const updatedComponents = components.filter((c: any) => c._id.toString() !== component._id.toString());
+    setComponents(updatedComponents);
   }
 
   return <Dialog open={props.open} onClose={props.onClose}>
@@ -205,56 +202,64 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
         </Typography>
         {!!templates?.length && (
           templates.map((template: any, index: number) => (
-            <Box
+            <Button
               key={template.name}
-              display={'flex'}
-              alignItems={'center'}
-              justifyContent={'space-between'}
+              variant={selectedTemplateIndex === index ? 'contained' : 'outlined'}
+              color={selectedTemplateIndex === index ? 'primary' : 'inherit'}
+              onClick={() => handleTemplateButtonClick(index)}
+              sx={{
+                minWidth: '150px',
+                maxWidth: '100%',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap'
+              }}
             >
-              <Box display={'flex'} alignItems={'center'} gap={2} flex={1} minWidth={0}>
-                <Checkbox
-                  checked={template.checked}
-                  onChange={() => handleTemplateCheckboxChange(index)}
-                />
-                <Typography
-                  noWrap
-                  sx={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    maxWidth: '700px',
-                    flex: 1
-                  }}
-                >
-                  {template.name}
-                </Typography>
-              </Box>
-            </Box>
+              {template.name}
+            </Button>
           ))
         )}
         <Typography variant={'subtitle1'}>
           Komponente
         </Typography>
         {!!components?.length &&
-          components.map((component: any, index: number) => (
-            <Box
-              key={component.name}
-              display={'flex'}
-              alignItems={'center'}
-              justifyContent={'space-between'}
-              gap={2}
-            >
-              <Box display={'flex'} alignItems={'center'} gap={2} flex={1} minWidth={0}>
-                <Checkbox
-                  checked={component.checked}
-                  onChange={() => handleComponentCheckboxChange(index)}
-                />
-                <img
-                  src={`${API_URL}/${component.image}`}
-                  alt={component.name}
-                  width={40}
-                  height={40}
-                  style={{ borderRadius: 4, objectFit: 'cover' }}
+          components.map((component: any, index: number) => {
+            return (
+              <Box
+                key={component.name}
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+                gap={2}
+              >
+                <Box display={'flex'} alignItems={'center'} gap={2} flex={1} minWidth={0}>
+                  <img
+                    src={`${API_URL}/${component.image}`}
+                    alt={component.name}
+                    width={40}
+                    height={40}
+                    style={{ borderRadius: 4, objectFit: 'cover' }}
+                  />
+                  <Typography
+                    noWrap
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      maxWidth: '1000px',
+                      flex: 1
+                    }}
+                  >
+                    {component.name}
+                  </Typography>
+                </Box>
+                <TextField
+                  type={'number'}
+                  label={'Količina'}
+                  size={'small'}
+                  value={component.quantity}
+                  onChange={(event: any) => handleQuantityChange(index, event.target.value, component.maxQuantity)}
+                  sx={{ width: '100px' }}
                 />
                 <Typography
                   noWrap
@@ -262,37 +267,71 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
-                    maxWidth: '700px',
+                    maxWidth: '80px',
                     flex: 1
                   }}
                 >
-                  {component.name}
+                  Max: {component.maxQuantity}
                 </Typography>
+                <IconButton
+                  color={'primary'}
+                  onClick={() => deleteComponent(component)}
+                >
+                  <DeleteIcon />
+                </IconButton>
               </Box>
-              <TextField
-                type={'number'}
-                label={'Količina'}
-                size={'small'}
-                value={component.quantity}
-                onChange={(event: any) => handleQuantityChange(index, event.target.value)}
-                sx={{ width: '100px' }}
-                disabled={!component.checked}
-              />
-              <Typography
-                noWrap
-                sx={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  maxWidth: '700px',
-                  flex: 1,
-                  color: component.quantity > (component.totalQuantity - component.assigned) ? 'red' : 'inherit'
-                }}
-              >
-                Dostupno {component.totalQuantity - component.assigned}
-              </Typography>
+            )
+          })
+        }
+        {
+          (addComponentButton && remainingComponents?.length) ?
+            <Button variant={'contained'} onClick={() => setAddComponentButton(false)}>
+              Dodaj komponentu
+            </Button>
+            :
+            <Box display="flex" flexWrap="wrap" gap={2}>
+              {
+                remainingComponents?.map((component: any) => (
+                  <Button
+                    onClick={() => addComponent(component)}
+                    disabled={component.totalQuantity - component.assigned === 0}
+                    sx={{
+                      position: 'relative',
+                      width: 120,
+                      height: 120,
+                      padding: 0,
+                      overflow: 'hidden',
+                      borderRadius: 2,
+                    }}
+                  >
+                    <img
+                      src={`${API_URL}/${component.image}`}
+                      alt={component.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                    <Box
+                      position="absolute"
+                      bottom={0}
+                      width="100%"
+                      bgcolor="rgba(0, 0, 0, 0.6)"
+                      color="white"
+                      textAlign="center"
+                      px={1}
+                      py={0.5}
+                      fontSize="0.75rem"
+                      lineHeight={1.2}
+                    >
+                      {component.name}
+                    </Box>
+                  </Button>
+                ))}
             </Box>
-          ))}
+
+        }
       </Box>
     </DialogContent>
     <DialogActions>

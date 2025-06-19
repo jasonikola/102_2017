@@ -122,11 +122,6 @@ function Groups() {
           key={`menuItem${theme.name}`}
           value={theme.name}
           disabled={!!theme.group && group.name !== theme.group}
-          sx={{
-            ...(theme.group && {
-              color: 'text.disabled',
-            }),
-          }}
         >
           {theme.name}
         </MenuItem>

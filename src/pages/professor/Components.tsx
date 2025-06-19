@@ -1,8 +1,19 @@
 import React, { useEffect } from 'react';
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import AddComponent from "../../dialogs/AddComponent";
 import axios from "axios";
 import ApiService from "../../ApiService";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // TODO add component model
 
@@ -82,9 +93,12 @@ function Components() {
                   <TableCell>{component.quantity}</TableCell>
                   <TableCell>{component.assigned}</TableCell>
                   <TableCell>
-                    <Button variant={'text'} onClick={() => deleteComponent(component)}>
-                      Obrisi
-                    </Button>
+                    <IconButton
+                      color={'primary'}
+                      onClick={() => deleteComponent(component)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))
