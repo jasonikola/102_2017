@@ -94,7 +94,7 @@ function Components() {
                   <TableCell>{component.assigned}</TableCell>
                   <TableCell>
                     <IconButton
-                      color={'primary'}
+                      color={'error'}
                       onClick={() => deleteComponent(component)}
                     >
                       <DeleteIcon />

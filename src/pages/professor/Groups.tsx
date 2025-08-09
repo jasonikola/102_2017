@@ -16,14 +16,14 @@ function Groups() {
   const [selectedThemes, setSelectedThemes] = React.useState<any[]>([]);
   const [componentsDialogOpen, setComponentsDialogOpen] = React.useState(false);
   const [selectedGroup, setSelectedGroup] = React.useState<any>();
-  const noTheme = 'Bez teme'
+  const noTheme = 'Bez teme';
 
   useEffect(() => {
     getGroups().then((groups: any) => {
       const newThemes: any[] = [];
       setGroups(groups);
       groups?.forEach((group: any) => {
-        newThemes.unshift(group.theme ? group.theme : noTheme);
+        newThemes.push(group.theme ? group.theme : noTheme);
       });
       setSelectedThemes(newThemes);
     });
@@ -109,9 +109,9 @@ function Groups() {
     setComponentsDialogOpen(true);
   }
 
-  const selectThemeComponent = (group: any, index: number) => (
-    <Select
-      value={selectedThemes[index]}
+  const selectThemeComponent = (group: any, index: number) => {
+    return <Select
+      value={group.theme || noTheme}
       onChange={(e: any) => handleThemeChange(index, e.target.value, group.name)}
       fullWidth
       displayEmpty
@@ -127,7 +127,7 @@ function Groups() {
         </MenuItem>
       ))}
     </Select>
-  );
+  };
 
   const onCloseGroupComponentsDialog = (group: any) => {
     setSelectedGroup(null);
@@ -145,16 +145,16 @@ function Groups() {
     }
   }
 
-  const componentsButtonComponent = (group: any) => (
-    <Button
+  const componentsButtonComponent = (group: any) => {
+    return <Button
       variant={'text'}
       onClick={() => {
         openComponentsDialog(group);
       }}
     >
-      Komponente: {group.components.length}
+      Komponente: {group?.components?.length || 0}
     </Button>
-  );
+  };
 
   return (
     <>

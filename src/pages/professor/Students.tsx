@@ -14,12 +14,15 @@ import {
 } from "@mui/material";
 import AddStudent from "../../dialogs/AddStudent";
 import ApiService from "../../ApiService";
+import StudentPoints from "../../dialogs/StudentPoints";
 
 function Students() {
   const [students, setStudents] = useState<any[]>([]);
   const [groups, setGroups] = useState<any[]>([]);
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [addStudentOpen, setAddStudentOpen] = useState(false);
+  const [studentPointsOpen, setStudentPointsOpen] = useState(false);
+  const [studentForPoints, setStudentForPoints] = useState<any>(null);
   const noGroup = 'Bez grupe';
 
   useEffect(() => {
@@ -31,7 +34,7 @@ function Students() {
       });
       setSelectedGroups(newGroups);
     });
-    getGroups().then((groups:any) => {
+    getGroups().then((groups: any) => {
       setGroups(groups);
     });
   }, []);
@@ -70,8 +73,9 @@ function Students() {
     setAddStudentOpen(true);
   }
 
-  const showPoints = () => {
-    console.log('TODO prikazi poene');
+  const showPoints = (student: any) => {
+    setStudentPointsOpen(true);
+    setStudentForPoints(student);
   }
 
   const handleGroupChange = (index: number, groupName: any, indexNumber: string) => {
@@ -96,11 +100,32 @@ function Students() {
     }
   }
 
+  const studentPointsOnClose = (points: any) => {
+    setStudentPointsOpen(false);
+    const updatedStudents = students.map((student: any) => {
+      if (student._id === studentForPoints._id) {
+        return {
+          ...student,
+          points: points,
+        }
+      } else {
+        return student
+      }
+    });
+    setStudents(updatedStudents);
+    setStudentForPoints(null)
+  }
+
   return (
     <>
       <TableContainer component={Paper}>
         <Button variant={'contained'} onClick={openAddStudentDialog}>
           Dodaj studenta
+        </Button>
+        <>       </>
+        <Button variant={'contained'} onClick={() => {
+        }}>
+          Dodaj CSV
         </Button>
         <Table>
           <TableHead>
@@ -131,7 +156,7 @@ function Students() {
                   </Select>
                 </TableCell>
                 <TableCell>
-                  <Button variant={'text'} onClick={showPoints}>
+                  <Button variant={'text'} onClick={() => showPoints(student)}>
                     Prikazi poene
                   </Button>
                 </TableCell>
@@ -144,7 +169,14 @@ function Students() {
       <AddStudent
         open={addStudentOpen}
         closeAndRefresh={closeAndRefresh}
-        onClose={() => setAddStudentOpen(false)} />
+        onClose={() => setAddStudentOpen(false)}
+      />
+
+      <StudentPoints
+        open={studentPointsOpen}
+        onClose={studentPointsOnClose}
+        student={studentForPoints}
+      />
     </>
   );
 }

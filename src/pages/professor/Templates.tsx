@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Button,
+  Button, IconButton,
   Paper, Table,
   TableBody,
   TableCell,
@@ -12,6 +12,8 @@ import {
 import AddTemplate from "../../dialogs/AddTemplate";
 import axios from "axios";
 import ApiService from "../../ApiService";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from '@mui/icons-material/Edit';
 
 function Templates() {
   const [templates, setTemplates] = useState<any[]>([]);
@@ -121,19 +123,18 @@ function Templates() {
                   {index === 0 && (
                     <TableCell rowSpan={template.components.length}>
                       <Box display={'flex'} flexDirection={'column'} gap={1}>
-                        <Button
-                          variant={'text'}
+                        <IconButton
+                          color={'primary'}
                           onClick={() => editTemplate(template)}
                         >
-                          Izmeni
-                        </Button>
-                        <Button
-                          variant={'text'}
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
                           color={'error'}
                           onClick={() => deleteTemplate(template)}
                         >
-                          Obriši
-                        </Button>
+                          <DeleteIcon />
+                        </IconButton>
                       </Box>
                     </TableCell>
                   )}

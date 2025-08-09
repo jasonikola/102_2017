@@ -21,10 +21,10 @@ router.put('/add', async (req, res) => {
       res.status(401).json("Vec postoji grupa sa datim imenom");
     } else {
       const members = [];
-      const data = { name, members };
+      const components = [];
+      const data = { name, members, components, theme: '' };
       await groups.insertOne(data);
-      const { _id, ...dataWithoutId } = data;
-      res.status(200).json(dataWithoutId);
+      res.status(200).json(data);
     }
   } catch (e) {
     res.status(500).json('Internal server error');
@@ -149,7 +149,6 @@ router.post('/assignComponents', async (req, res) => {
       }
       componentGlobal.assigned -= decrement;
       componentGlobal.assigned += component.quantity;
-console.log(componentGlobal);
       await componentsCollection.updateOne({ _id: new ObjectId(componentGlobal._id) }, { $set: { assigned: componentGlobal.assigned } });
     }
 
