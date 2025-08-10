@@ -2,13 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { selectUser, setUser } from "../../features/userSlice";
 import { Box, Button, Checkbox, Container, FormControlLabel, Paper, TextField, Typography } from "@mui/material";
 
 function ProfessorPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -47,8 +44,6 @@ function ProfessorPage() {
           setEmail('');
           setPassword('');
         }
-
-        dispatch(setUser(result));
         navigate(`./home`, { replace: true });
       } else {
         setError(result.error);

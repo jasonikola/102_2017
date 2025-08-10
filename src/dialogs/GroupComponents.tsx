@@ -169,7 +169,7 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
     setAddComponentButton(true);
   }
 
-  const remainingComponents = allComponents.filter(ac =>
+  const remainingComponents = allComponents?.filter(ac =>
     !components.some(c => c._id.toString() === ac._id.toString())
   );
 
