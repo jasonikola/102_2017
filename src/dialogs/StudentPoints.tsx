@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import React, { useEffect } from 'react';
 import axios from 'axios';
+import { ErrorManager } from "../utils/ErrorManager";
 
 interface StudentPointsProps {
   open: boolean;
@@ -81,9 +82,8 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
       if (response?.status === 200 && response.data) {
         console.log('Success!');
       }
-    } catch (e) {
-      console.error(e);
-      // TODO error
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 

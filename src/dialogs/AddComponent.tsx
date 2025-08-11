@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import axios from 'axios';
+import { ErrorManager } from "../utils/ErrorManager";
 
 interface AddComponentProps {
   open: boolean;
@@ -43,9 +44,8 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
         resetValues();
         props.closeAndRefresh(response.data);
       }
-    } catch (e) {
-      console.error(e);
-      // TODO add warning
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   };
 

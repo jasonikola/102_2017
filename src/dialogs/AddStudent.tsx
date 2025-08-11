@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import axios from "axios";
+import { ErrorManager } from "../utils/ErrorManager";
 
 interface AddStudentProps {
   open: boolean;
@@ -36,8 +37,8 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
         resetValues();
         props.closeAndRefresh(response.data);
       }
-    } catch (e) {
-      // TODO add error message
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 

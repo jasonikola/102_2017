@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import ApiService from "../ApiService";
 import axios from "axios";
+import { ErrorManager } from "../utils/ErrorManager";
 
 interface AddTemplateProps {
   open: boolean;
@@ -54,9 +55,8 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
   const getComponents = async () => {
     try {
       return await ApiService.getComponents();
-    } catch (e: any) {
-      console.error(e);
-      // TODO add warning dialog
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   };
 
@@ -72,9 +72,8 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
         resetValues();
         props.closeAndRefresh(response.data);
       }
-    } catch (e) {
-      console.error(e);
-      // TODO add error
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   };
 
@@ -136,9 +135,8 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
         resetValues();
         props.closeAndRefresh(response.data);
       }
-    } catch (e) {
-      console.error(e);
-      // TODO dialog
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 

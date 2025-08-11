@@ -15,6 +15,7 @@ import {
 import AddStudent from "../../dialogs/AddStudent";
 import ApiService from "../../ApiService";
 import StudentPoints from "../../dialogs/StudentPoints";
+import { ErrorManager } from "../../utils/ErrorManager";
 
 function Students() {
   const [students, setStudents] = useState<any[]>([]);
@@ -42,14 +43,11 @@ function Students() {
   const getStudents = async () => {
     try {
       const response = await axios.get('/students');
-
       if (response.status === 200) {
         return response.data;
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      // TODO
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -57,9 +55,8 @@ function Students() {
     try {
       const groups = await ApiService.getGroups();
       return groups.map((group: any) => group.name)
-    } catch (e) {
-      console.log(e);
-      //  TODO warning
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -87,16 +84,13 @@ function Students() {
 
   const updateGroupName = async (index: string, groupName: string) => {
     try {
-      const response = await axios.post('/students/assignGroup',
+      await axios.post('/students/assignGroup',
         { index, groupName: groupName !== noGroup ? groupName : '' },
         {
           headers: { 'Content-Type': 'application/json' }
         });
-      if (response.status !== 200) {
-        // TODO add some warning
-      }
-    } catch (e) {
-      console.log(e);
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -124,6 +118,7 @@ function Students() {
         </Button>
         <>       </>
         <Button variant={'contained'} onClick={() => {
+          ErrorManager.show('Andjica carica');
         }}>
           Dodaj CSV
         </Button>
@@ -148,7 +143,7 @@ function Students() {
                     fullWidth
                   >
                     <MenuItem value={noGroup}>{noGroup}</MenuItem>
-                    {groups.map((group: any) => (
+                    {groups?.map((group: any) => (
                       <MenuItem key={`${student}-${group}`} value={group}>
                         {group}
                       </MenuItem>

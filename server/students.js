@@ -51,7 +51,7 @@ router.post('/assignGroup', async (req, res) => {
   const { index, groupName } = req.body;
 
   if (!index || groupName === undefined || groupName === null) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
 
   try {
@@ -64,13 +64,13 @@ router.post('/assignGroup', async (req, res) => {
         const groupCollection = db.collection('groups');
         const groupExists = await groupCollection.findOne({ name: groupName });
         if (!groupExists) {
-          res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+          res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
         }
       }
       await studentsCollection.updateOne({ index }, { $set: { group: groupName } });
       res.status(200).json("Grupa studenta promenjena.");
     } else {
-      res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+      res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
     }
   } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });

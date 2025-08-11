@@ -9,7 +9,7 @@ router.put('/add', async (req, res) => {
   const name = req.body.name;
 
   if (!name) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
 
   try {
@@ -18,7 +18,7 @@ router.put('/add', async (req, res) => {
     const group = await groups.findOne({ name: name });
 
     if (group) {
-      res.status(401).json("Vec postoji grupa sa datim imenom");
+      res.status(401).json({ error: "Vec postoji grupa sa datim imenom" });
     } else {
       const members = [];
       const components = [];
@@ -27,7 +27,7 @@ router.put('/add', async (req, res) => {
       res.status(200).json(data);
     }
   } catch (e) {
-    res.status(500).json('Internal server error');
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -65,7 +65,7 @@ router.post('/assignTheme', async (req, res) => {
   console.log('/groups/assignTheme call');
   const { groupName, themeName } = req.body;
   if (!groupName || themeName === undefined || themeName === null) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
 
   try {
@@ -86,7 +86,7 @@ router.post('/assignTheme', async (req, res) => {
 
       res.status(200).json('Tema grupe uspesno promenjena');
     } else {
-      res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+      res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
     }
   } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });
@@ -97,11 +97,11 @@ router.post('/assignComponents', async (req, res) => {
   console.log('/groups/assignComponents call');
   const { _id, components } = req.body;
   if (!_id || !components) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
 
   if (!ObjectId.isValid(_id)) {
-    res.status(404).send('Nije validan id grupe.');
+    res.status(404).send({ error: 'Nije validan id grupe.' });
   }
 
   try {
@@ -110,7 +110,7 @@ router.post('/assignComponents', async (req, res) => {
     const group = await groupsCollection.findOne({ _id: new ObjectId(_id) });
 
     if (!group) {
-      res.status(404).send('Grupa ne postoji.');
+      res.status(404).send({ error: 'Grupa ne postoji.' });
     }
 
     const componentsCollection = db.collection('components');
@@ -126,7 +126,7 @@ router.post('/assignComponents', async (req, res) => {
           globalComponent.assigned -= groupComponent.quantity;
           await componentsCollection.updateOne({ _id: new ObjectId(globalComponent._id) }, { $inc: { assigned: -globalComponent.quantity } });
         } else {
-          res.status(404).send('Komponenta ne postoji.');
+          res.status(404).send({ error: 'Komponenta ne postoji.' });
         }
       }
     }
@@ -145,7 +145,7 @@ router.post('/assignComponents', async (req, res) => {
       }
       const componentGlobal = allComponents.find((aComponent) => aComponent._id.toString() === component._id.toString());
       if (!componentGlobal) {
-        res.status(404).send('Komponenta ne postoji.');
+        res.status(404).send({ error: 'Komponenta ne postoji.' });
       }
       componentGlobal.assigned -= decrement;
       componentGlobal.assigned += component.quantity;

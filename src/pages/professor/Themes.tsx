@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
 import FormInput from "../../components/FormInput";
 import axios from "axios";
+import { ErrorManager } from "../../utils/ErrorManager";
+import ApiService from "../../ApiService";
 
 // TODO add component model
 
@@ -18,13 +20,9 @@ function Themes() {
 
   const getThemes = async () => {
     try {
-      const response = await axios.get('/themes');
-      if (response.status === 200) {
-        return response.data;
-      }
-    } catch (e) {
-      // TODO
-      console.error(e);
+      return await ApiService.getThemes();
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -39,12 +37,9 @@ function Themes() {
         const updatedThemes = [...themes];
         updatedThemes.unshift(response.data);
         setThemes(updatedThemes);
-      } else {
-        // TOOD deletee
-        console.log(response);
       }
-    } catch (e) {
-      // TODO add warning
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 

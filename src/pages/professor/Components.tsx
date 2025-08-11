@@ -14,6 +14,7 @@ import AddComponent from "../../dialogs/AddComponent";
 import axios from "axios";
 import ApiService from "../../ApiService";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ErrorManager } from "../../utils/ErrorManager";
 
 // TODO add component model
 
@@ -29,9 +30,8 @@ function Components() {
   const getComponents = async () => {
     try {
       return await ApiService.getComponents();
-    } catch (e: any) {
-      console.error(e);
-      // TODO add warning dialog
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -53,9 +53,8 @@ function Components() {
         const updatedComponents = components.filter((c: any) => c._id !== component._id);
         setComponents(updatedComponents);
       }
-    } catch (e) {
-      console.log(e);
-      // TODO warrning
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 

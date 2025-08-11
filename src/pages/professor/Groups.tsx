@@ -8,6 +8,7 @@ import axios from "axios";
 import FormInput from "../../components/FormInput";
 import ApiService from "../../ApiService";
 import GroupComponents from "../../dialogs/GroupComponents";
+import { ErrorManager } from "../../utils/ErrorManager";
 
 function Groups() {
   const [newGroup, setNewGroup] = React.useState('');
@@ -35,18 +36,16 @@ function Groups() {
   const getGroups = async () => {
     try {
       return await ApiService.getGroups();
-    } catch (e) {
-      console.log(e);
-      //  TODO warning
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
   const getThemes = async () => {
     try {
       return await ApiService.getThemes();
-    } catch (e) {
-      console.log(e);
-      // TODO
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -62,8 +61,8 @@ function Groups() {
         const updatedGroups: any[] = [...groups, response.data];
         setGroups(updatedGroups);
       }
-    } catch (e: any) {
-      // TODO add some warning
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -80,6 +79,8 @@ function Groups() {
     const updatedThemes = themes?.map((theme: any) => {
       if (theme.name === themeName) {
         theme.group = groupName;
+      } else if (themeName === noTheme && theme.group === groupName) {
+        theme.group = '';
       }
       return theme;
     });
@@ -89,18 +90,25 @@ function Groups() {
   }
 
   const updateGroupTheme = async (groupName: string, themeName: string) => {
+    const updatedGroups = groups?.map((group: any) => {
+      if (group.name === groupName) {
+        return {
+          ...group,
+          theme: themeName
+        }
+      }
+      return group;
+    });
+    setGroups(updatedGroups);
+
     try {
-      const response = await axios.post('/groups/assignTheme',
+      await axios.post('/groups/assignTheme',
         { groupName, themeName: themeName !== noTheme ? themeName : '' },
         {
           headers: { 'Content-Type': 'application/json' }
         });
-      if (response.status !== 200) {
-        // TODO add some warning
-      }
-    } catch (e: any) {
-      console.log(e);
-      // TODO warning
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 

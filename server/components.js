@@ -29,7 +29,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
   const { file } = req;
 
   if (!name || quantity === undefined || quantity === null || !file) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
 
   try {
@@ -55,7 +55,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
     await componentsCollection.insertOne(data);
     res.status(200).json(data);
   } catch (e) {
-    res.status(500).send('Internal server error');
+    res.status(500).send({ error: 'Internal server error' });
   }
 });
 
@@ -79,7 +79,7 @@ router.delete('/delete/:id', async (req, res) => {
   const componentId = req.params.id;
 
   if (!ObjectId.isValid(componentId)) {
-    res.status(404).send('Nije validan id komponente.');
+    res.status(404).send({ error: 'Nije validan id komponente.' });
   }
 
   try {
@@ -89,7 +89,7 @@ router.delete('/delete/:id', async (req, res) => {
     const component = await componentsCollection.findOne({ _id: new ObjectId(componentId) });
 
     if (!component) {
-      return res.status(404).json('Komponenta nije pronadjena.');
+      return res.status(404).json({ error: 'Komponenta nije pronadjena.' });
     }
 
     const imagePath = path.join(__dirname, component.image);
@@ -101,7 +101,7 @@ router.delete('/delete/:id', async (req, res) => {
 
     res.status(200).send('Komponente je obrisana.');
   } catch (e) {
-    res.status(500).send( 'Internal server error' );
+    res.status(500).send({ error: 'Internal server error' });
   }
 });
 

@@ -14,6 +14,7 @@ import axios from "axios";
 import ApiService from "../../ApiService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
+import { ErrorManager } from "../../utils/ErrorManager";
 
 function Templates() {
   const [templates, setTemplates] = useState<any[]>([]);
@@ -28,9 +29,8 @@ function Templates() {
   const getTemplates = async () => {
     try {
       return await ApiService.getTemplates();
-    } catch (e) {
-      // TODO
-      console.error(e);
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -39,7 +39,6 @@ function Templates() {
   }
 
   const closeAndRefresh = (template: any) => {
-    // TODO add added template
     setAddTemplateOpen(false);
     let updatedTemplates = [...templates];
     if (templateToEdit) {
@@ -76,9 +75,8 @@ function Templates() {
         const updatedTemplates = templates.filter((t: any) => t._id !== template._id);
         setTemplates(updatedTemplates);
       }
-    } catch (e) {
-      // TODO
-      console.error(e);
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 

@@ -13,6 +13,7 @@ import React, { useEffect } from "react";
 import ApiService from "../ApiService";
 import axios from "axios";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { ErrorManager } from "../utils/ErrorManager";
 
 interface GroupComponentsProps {
   open: boolean;
@@ -74,18 +75,16 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
   const getComponents = async () => {
     try {
       return await ApiService.getComponents();
-    } catch (e: any) {
-      console.error(e);
-      // TODO add warning dialog
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   };
 
   const getTemplates = async () => {
     try {
       return await ApiService.getTemplates();
-    } catch (e) {
-      // TODO
-      console.error(e);
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 
@@ -141,9 +140,8 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
       if (response?.status === 200 && response.data) {
         setReturnValue(response.data);
       }
-    } catch (e) {
-      console.error(e);
-      // TODO error
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
     }
   }
 

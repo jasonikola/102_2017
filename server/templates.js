@@ -9,7 +9,7 @@ router.put('/add', async (req, res) => {
   const { name, components } = req.body;
 
   if (!name || !components) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
 
   try {
@@ -18,14 +18,14 @@ router.put('/add', async (req, res) => {
     const template = await templates.findOne({ name });
 
     if (template) {
-      res.status(401).json("Sablon sa datim imenom vec postoji");
+      res.status(401).json({ error: "Sablon sa datim imenom vec postoji" });
     } else {
       const data = { name, components };
       await templates.insertOne(data);
       res.status(200).json(data);
     }
   } catch (e) {
-    res.status(500).send('Internal server error');
+    res.status(500).send({ error: 'Internal server error' });
   }
 });
 
@@ -48,20 +48,20 @@ router.delete('/delete/:id', async (req, res) => {
   const templateId = req.params.id;
 
   if (!ObjectId.isValid(templateId)) {
-    res.status(404).send('Nije validan id sablona.');
+    res.status(404).send({ error: 'Nije validan id sablona.' });
   }
   try {
     const db = await connectToDatabase();
     const templatesCollection = db.collection('templates');
     const template = await templatesCollection.findOne({ _id: new ObjectId(templateId) });
     if (!template) {
-      res.status(401).json('Sablon nije pronadjen.');
+      res.status(401).json({ error: 'Sablon nije pronadjen.' });
     }
     await templatesCollection.deleteOne({ _id: new ObjectId(templateId) });
 
     res.status(200).send('Sablon je izbrisan');
   } catch (e) {
-    res.status(500).send('Internal server error');
+    res.status(500).send({ error: 'Internal server error' });
   }
 });
 
@@ -70,7 +70,7 @@ router.put('/edit/:id', async (req, res) => {
   const { name, components } = req.body;
   const templateId = req.params.id;
   if (!ObjectId.isValid(templateId) || !name || !components) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
 
   try {
@@ -80,17 +80,17 @@ router.put('/edit/:id', async (req, res) => {
 
     const existingTemplate = await templatesCollection.findOne({ _id: objectId });
     if (!existingTemplate) {
-      return res.status(404).json("Šablon nije pronađen.");
+      return res.status(404).json({ error: "Šablon nije pronađen." });
     }
 
-    if(existingTemplate.name || name) {
+    if (existingTemplate.name || name) {
       const nameExists = await templatesCollection.findOne({
         name: name,
         _id: { $ne: objectId }
       });
 
       if (nameExists) {
-        return res.status(401).json("Drugi šablon sa datim imenom već postoji.");
+        return res.status(401).json({ error: "Drugi šablon sa datim imenom već postoji." });
       }
     }
     await templatesCollection.updateOne(
@@ -101,7 +101,7 @@ router.put('/edit/:id', async (req, res) => {
     const updatedTemplate = await templatesCollection.findOne({ _id: objectId });
     return res.status(200).json(updatedTemplate);
   } catch (e) {
-    res.status(500).send('Internal server error');
+    res.status(500).send({ error: 'Internal server error' });
   }
 });
 
