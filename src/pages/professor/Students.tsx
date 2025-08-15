@@ -10,13 +10,14 @@ import {
   TableHead,
   TableRow,
   Select,
-  MenuItem
+  MenuItem, IconButton
 } from "@mui/material";
 import AddStudent from "../../dialogs/AddStudent";
 import ApiService from "../../ApiService";
 import StudentPoints from "../../dialogs/StudentPoints";
 import { ErrorManager } from "../../utils/ErrorManager";
 import AddCSV from "../../dialogs/AddCsv";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Students() {
   const [students, setStudents] = useState<any[]>([]);
@@ -118,6 +119,16 @@ function Students() {
     setStudentForPoints(null)
   }
 
+  const deleteStudent = async (student: any) => {
+    try {
+      const response = await axios.delete(`/students/delete/${student._id}`);
+      const updatedStudents = students.filter((s: any) => s._id !== student._id);
+      setStudents(updatedStudents);
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error);
+    }
+  }
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -138,6 +149,7 @@ function Students() {
               <TableCell>Ime i Prezime</TableCell>
               <TableCell>Grupa</TableCell>
               <TableCell>Poeni</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -163,6 +175,14 @@ function Students() {
                   <Button variant={'text'} onClick={() => showPoints(student)}>
                     Prikazi poene
                   </Button>
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    color={'error'}
+                    onClick={() => deleteStudent(student)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}

@@ -162,4 +162,37 @@ router.post('/addCsv', upload.single('file'), async (req, res) => {
   }
 });
 
+router.delete('/delete/:id', async (req, res) => {
+  console.log('/students/delete call');
+  const studentId = req.params.id;
+
+  if (!ObjectId.isValid(studentId)) {
+    res.status(404).send({ error: 'Nije validan id studenta.' });
+  }
+
+  try {
+    const db = await connectToDatabase();
+    const studentsCollection = db.collection('students');
+
+    const student = await studentsCollection.findOne({ _id: new ObjectId(studentId) });
+    if (!student) {
+      return res.status(404).json({ error: 'Student nije pronadjen.' });
+    }
+    const groupName = student.group;
+
+    if (groupName) {
+      const groupCollection = await db.collection('groups');
+      const group = await groupCollection.findOne({ name: groupName });
+      let members = [...group.members];
+      members = members.filter((member) => !member.include(`${student.firstName} ${student.lastName}`));
+      console.log(members);
+    }
+
+    await studentsCollection.deleteOne({ _id: new ObjectId(studentId) });
+    res.status(200).send(groupName);
+  } catch (e) {
+    res.status(500).send({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;
