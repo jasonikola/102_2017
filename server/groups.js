@@ -190,6 +190,11 @@ router.delete('/delete/:id', async (req, res) => {
       }
     }
 
+    if (group.theme) {
+      const themes = db.collection('themes');
+      await themes.updateOne({ name: group.theme }, { $set: { group: '' } });
+    }
+
     await groupsCollection.deleteOne({ _id: new ObjectId(groupId) });
     res.status(200).json('Grupa uspesno isbrisana.');
   } catch (e) {

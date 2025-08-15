@@ -122,8 +122,10 @@ function Students() {
   const deleteStudent = async (student: any) => {
     try {
       const response = await axios.delete(`/students/delete/${student._id}`);
-      const updatedStudents = students.filter((s: any) => s._id !== student._id);
-      setStudents(updatedStudents);
+      if (response.status === 200) {
+        const updatedStudents = students.filter((s: any) => s._id !== student._id);
+        setStudents(updatedStudents);
+      }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error);
     }

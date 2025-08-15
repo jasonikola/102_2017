@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
+import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
 import FormInput from "../../components/FormInput";
 import axios from "axios";
 import { ErrorManager } from "../../utils/ErrorManager";
 import ApiService from "../../ApiService";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // TODO add component model
 
@@ -48,6 +49,18 @@ function Themes() {
     return newTheme?.length === 0;
   }
 
+  const deleteTheme = async (theme: any) => {
+    try {
+      const response = await axios.delete(`/themes/delete/${theme._id}`);
+      if (response.status === 200) {
+        const updatedThemes = themes.filter((t: any) => t._id !== theme._id);
+        setThemes(updatedThemes);
+      }
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error || 'Greska pri brisanju teme.');
+    }
+  }
+
   return (
     <TableContainer component={Paper}>
       <FormInput
@@ -63,6 +76,7 @@ function Themes() {
           <TableRow>
             <TableCell>Ime teme</TableCell>
             <TableCell>Dodeljena grupi</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -71,6 +85,14 @@ function Themes() {
               <TableRow key={theme.name}>
                 <TableCell>{theme.name}</TableCell>
                 <TableCell>{theme.group ? theme.group : 'Nije dodeljeno grupi'}</TableCell>
+                <TableCell>
+                  <IconButton
+                    color={'error'}
+                    onClick={() => deleteTheme(theme)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))
           }
