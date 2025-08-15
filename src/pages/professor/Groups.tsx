@@ -1,5 +1,5 @@
 import {
-  Button, MenuItem,
+  Button, IconButton, MenuItem,
   Paper, Select, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow
 } from "@mui/material";
@@ -9,6 +9,7 @@ import FormInput from "../../components/FormInput";
 import ApiService from "../../ApiService";
 import GroupComponents from "../../dialogs/GroupComponents";
 import { ErrorManager } from "../../utils/ErrorManager";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Groups() {
   const [newGroup, setNewGroup] = React.useState('');
@@ -87,6 +88,18 @@ function Groups() {
     setThemes(updatedThemes);
 
     updateGroupTheme(groupName, themeName);
+  }
+
+  const deleteGroup = async (group: any) => {
+    try {
+      const response = await axios.delete(`/groups/delete/${group._id}`);
+      if (response.status === 200) {
+        const updatedGroups = groups.filter((g: any) => g._id !== group._id);
+        setGroups(updatedGroups);
+      }
+    } catch (error: any) {
+      ErrorManager.show(error.response.data.error || 'Greska pri brisanju grupe.');
+    }
   }
 
   const updateGroupTheme = async (groupName: string, themeName: string) => {
@@ -182,12 +195,13 @@ function Groups() {
               <TableCell>Clanovi</TableCell>
               <TableCell>Tema za seminarski</TableCell>
               <TableCell>Komponente</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {!!groups?.length && groups.map((group: any, index: number) => (
-              !!group.members.length ? group.members.map((member: any, memberIndex: number) => {
-                const rowSpan = group.members.length;
+              !!group.members?.length ? group.members.map((member: any, memberIndex: number) => {
+                const rowSpan = group.members?.length;
                 const firstRow = memberIndex === 0;
                 return (
                   <TableRow key={`tableRow${group.name}${member}`}>
@@ -208,6 +222,14 @@ function Groups() {
                         <TableCell rowSpan={rowSpan}>
                           {componentsButtonComponent(group)}
                         </TableCell>
+                        <TableCell rowSpan={rowSpan}>
+                          <IconButton
+                            color={'error'}
+                            onClick={() => deleteGroup(group)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
                       </>
                     )}
                   </TableRow>
@@ -222,6 +244,14 @@ function Groups() {
                   </TableCell>
                   <TableCell>
                     {componentsButtonComponent(group)}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      color={'error'}
+                      onClick={() => deleteGroup(group)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               )

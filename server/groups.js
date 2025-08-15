@@ -160,4 +160,41 @@ router.post('/assignComponents', async (req, res) => {
   }
 });
 
+router.delete('/delete/:id', async (req, res) => {
+  console.log('/groups/delete call');
+  const groupId = req.params.id;
+
+  if (!ObjectId.isValid(groupId)) {
+    res.status(404).send({ error: 'Nije validan id grupe.' });
+  }
+
+  try {
+    const db = await connectToDatabase();
+    const groupsCollection = db.collection('groups');
+    const group = await groupsCollection.findOne({ _id: new ObjectId(groupId) });
+
+    if (!group) {
+      return res.status(404).json({ error: 'Grupa nije pronadjena.' });
+    }
+
+    if (group.components.length) {
+      const components = group.components;
+      const componentsCollection = db.collection('components');
+      for (const component of components) {
+        const dbComponent = await componentsCollection.findOne({ _id: new ObjectId(component._id) });
+        if (!dbComponent) {
+          res.status(401).send({ error: 'Doslo je do greske.' });
+        }
+        dbComponent.assigned -= component.quantity;
+        await componentsCollection.updateOne({ _id: new ObjectId(dbComponent._id) }, { $set: { assigned: dbComponent.assigned } });
+      }
+    }
+
+    await groupsCollection.deleteOne({ _id: new ObjectId(groupId) });
+    res.status(200).json('Grupa uspesno isbrisana.');
+  } catch (e) {
+    res.status(500).send({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;

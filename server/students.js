@@ -178,18 +178,9 @@ router.delete('/delete/:id', async (req, res) => {
     if (!student) {
       return res.status(404).json({ error: 'Student nije pronadjen.' });
     }
-    const groupName = student.group;
-
-    if (groupName) {
-      const groupCollection = await db.collection('groups');
-      const group = await groupCollection.findOne({ name: groupName });
-      let members = [...group.members];
-      members = members.filter((member) => !member.include(`${student.firstName} ${student.lastName}`));
-      console.log(members);
-    }
 
     await studentsCollection.deleteOne({ _id: new ObjectId(studentId) });
-    res.status(200).send(groupName);
+    res.status(200).send('Student uspesno obrisan');
   } catch (e) {
     res.status(500).send({ error: 'Internal server error' });
   }

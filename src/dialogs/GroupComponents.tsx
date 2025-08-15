@@ -134,11 +134,12 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
       _id: group._id,
       components: components
     };
+    const members = group.members;
 
     try {
       const response = await axios.post('/groups/assignComponents', data);
       if (response?.status === 200 && response.data) {
-        setReturnValue(response.data);
+        setReturnValue({ ...response.data, members });
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error);

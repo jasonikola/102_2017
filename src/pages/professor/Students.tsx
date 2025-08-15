@@ -132,15 +132,15 @@ function Students() {
   return (
     <>
       <TableContainer component={Paper}>
-        <Button variant={'contained'} onClick={openAddStudentDialog}>
-          Dodaj studenta
-        </Button>
-        <>       </>
         <Button
           variant={'contained'}
           onClick={() => setAddCsvOpen(true)}
         >
           Dodaj CSV
+        </Button>
+        <>       </>
+        <Button variant={'contained'} onClick={openAddStudentDialog}>
+          Dodaj studenta
         </Button>
         <Table>
           <TableHead>
