@@ -1,8 +1,11 @@
 const express = require('express');
 const { connectToDatabase } = require("./DatabaseConnection");
 const { ObjectId } = require("mongodb");
+const multer = require("multer");
+const { parse } = require("csv-parse/sync");
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.put('/add', async (req, res) => {
   console.log("students/add call");
@@ -17,11 +20,19 @@ router.put('/add', async (req, res) => {
     const studentsCollection = db.collection('students');
     const student = await studentsCollection.findOne({ index });
     const group = '';
+    const points = {
+      test1: 0,
+      test2: 0,
+      reTest1: 0,
+      reTest2: 0,
+      exam: 0,
+      project: 0
+    }
 
     if (student) {
       res.status(401).json("Korisnik sa datim indexom vec postoji");
     } else {
-      const data = { index, firstName, lastName, group };
+      const data = { index, firstName, lastName, group, points };
       await studentsCollection.insertOne(data);
       const { _id, ...dataWithoutId } = data;
       res.status(200).json(dataWithoutId);
@@ -39,7 +50,6 @@ router.get('/', async (req, res) => {
     const studentsCursor = usersCollection.find();
     const students = await studentsCursor.toArray();
     // TODO check what would happen if there is a lot of students
-
     res.status(200).json(students);
   } catch (error) {
     res.status(500).send({ error: 'Internal Server Error' });
@@ -100,6 +110,53 @@ router.post('/savePoints', async (req, res) => {
     }
     await studentsCollection.updateOne({ _id: studentObjectId }, { $set: { points } });
     res.status(200).json('Poeni studenta uspesno promenjeni.');
+  } catch (e) {
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/addCsv', upload.single('file'), async (req, res) => {
+  console.log('/students/addCsv call');
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
+    }
+    const csvString = req.file.buffer.toString('utf-8');
+    const records = parse(csvString, {
+      skip_empty_lines: true,
+    });
+    const data = records.slice(1).map((row) => ({
+      number: row[0],
+      index: row[1],
+      name: row[2],
+      email: row[3]
+    }));
+    const db = await connectToDatabase();
+    const studentsCollection = db.collection('students');
+    const group = '';
+    const points = {
+      test1: 0,
+      test2: 0,
+      reTest1: 0,
+      reTest2: 0,
+      exam: 0,
+      project: 0
+    }
+
+    for (const row of data) {
+      const student = await studentsCollection.findOne({ index: row.index });
+      const firstName = row.name.split(' ')[0];
+      const lastName = row.name.split(' ')[1];
+      const newStudent = { index: row.index, firstName, lastName, group, points };
+
+      if (student) {
+        await studentsCollection.updateOne({ index: row.index }, { $set: newStudent });
+      } else {
+        await studentsCollection.insertOne(newStudent);
+      }
+    }
+
+    res.status(200).json('Korisnici uspesno dodati.');
   } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });
   }

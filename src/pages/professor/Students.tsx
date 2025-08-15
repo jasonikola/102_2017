@@ -16,14 +16,17 @@ import AddStudent from "../../dialogs/AddStudent";
 import ApiService from "../../ApiService";
 import StudentPoints from "../../dialogs/StudentPoints";
 import { ErrorManager } from "../../utils/ErrorManager";
+import AddCSV from "../../dialogs/AddCsv";
 
 function Students() {
   const [students, setStudents] = useState<any[]>([]);
   const [groups, setGroups] = useState<any[]>([]);
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [addStudentOpen, setAddStudentOpen] = useState(false);
+  const [addCsvOpen, setAddCsvOpen] = useState(false);
   const [studentPointsOpen, setStudentPointsOpen] = useState(false);
   const [studentForPoints, setStudentForPoints] = useState<any>(null);
+  const [refresh, setRefresh] = useState(false);
   const noGroup = 'Bez grupe';
 
   useEffect(() => {
@@ -31,14 +34,14 @@ function Students() {
       const newGroups: string[] = [];
       setStudents(students);
       students?.forEach((student: any) => {
-        newGroups.unshift(student.group ? student.group : noGroup);
+        newGroups.push(student.group ? student.group : noGroup);
       });
       setSelectedGroups(newGroups);
     });
     getGroups().then((groups: any) => {
       setGroups(groups);
     });
-  }, []);
+  }, [refresh]);
 
   const getStudents = async () => {
     try {
@@ -82,6 +85,11 @@ function Students() {
     updateGroupName(indexNumber, groupName);
   }
 
+  const refreshAfterCsvUpload = () => {
+    setRefresh(!refresh);
+    setAddCsvOpen(false);
+  }
+
   const updateGroupName = async (index: string, groupName: string) => {
     try {
       await axios.post('/students/assignGroup',
@@ -117,9 +125,10 @@ function Students() {
           Dodaj studenta
         </Button>
         <>       </>
-        <Button variant={'contained'} onClick={() => {
-          ErrorManager.show('Andjica carica');
-        }}>
+        <Button
+          variant={'contained'}
+          onClick={() => setAddCsvOpen(true)}
+        >
           Dodaj CSV
         </Button>
         <Table>
@@ -171,6 +180,12 @@ function Students() {
         open={studentPointsOpen}
         onClose={studentPointsOnClose}
         student={studentForPoints}
+      />
+
+      <AddCSV
+        open={addCsvOpen}
+        onClose={() => setAddCsvOpen(false)}
+        closeAndRefresh={refreshAfterCsvUpload}
       />
     </>
   );
