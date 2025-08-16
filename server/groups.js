@@ -123,8 +123,8 @@ router.post('/assignComponents', async (req, res) => {
       if (!stillExists) {
         const globalComponent = allComponents.find(gc => gc._id.toString() === groupComponent._id.toString());
         if (globalComponent) {
-          globalComponent.assigned -= groupComponent.quantity;
-          await componentsCollection.updateOne({ _id: new ObjectId(globalComponent._id) }, { $inc: { assigned: -globalComponent.quantity } });
+          const assigned = globalComponent.assigned - groupComponent.quantity;
+          await componentsCollection.updateOne({ _id: new ObjectId(globalComponent._id) }, { $set: { assigned: assigned } });
         } else {
           res.status(404).send({ error: 'Komponenta ne postoji.' });
         }
@@ -194,6 +194,9 @@ router.delete('/delete/:id', async (req, res) => {
       const themes = db.collection('themes');
       await themes.updateOne({ name: group.theme }, { $set: { group: '' } });
     }
+
+    const studentsCollection = db.collection('students');
+    await studentsCollection.updateMany({ group: group.name }, { $set: { group: '' } });
 
     await groupsCollection.deleteOne({ _id: new ObjectId(groupId) });
     res.status(200).json('Grupa uspesno isbrisana.');

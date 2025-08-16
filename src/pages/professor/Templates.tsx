@@ -91,6 +91,9 @@ function Templates() {
             <TableRow>
               <TableCell>Ime sablona</TableCell>
               <TableCell>Komponente</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -113,10 +116,10 @@ function Templates() {
                     />
                   </TableCell>
                   <TableCell>
-                    {component.name}
+                    {component.quantity ?? '-'}
                   </TableCell>
                   <TableCell>
-                    {component.quantity ?? '-'}
+                    {component.name}
                   </TableCell>
                   {index === 0 && (
                     <TableCell rowSpan={template.components.length}>

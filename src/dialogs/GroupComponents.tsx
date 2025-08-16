@@ -1,13 +1,13 @@
 import {
   Box,
-  Button, Checkbox,
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   TextField,
   Typography,
-  IconButton, Tooltip
+  IconButton
 } from "@mui/material";
 import React, { useEffect } from "react";
 import ApiService from "../ApiService";
@@ -21,7 +21,7 @@ interface GroupComponentsProps {
   group: any;
 }
 
-const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps) => {
+const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsProps) => {
   const [components, setComponents] = React.useState<any[]>([]);
   const [allComponents, setAllComponents] = React.useState<any[]>([]);
   const [templates, setTemplates] = React.useState<any[]>([]);
@@ -105,9 +105,10 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
         }
       });
       setComponents(updatedComponents);
+      setAddComponentButton(true);
     }
 
-    setSelectedTemplateIndex((prevIndex: any) => (newValue ? index : -1));
+    setSelectedTemplateIndex(() => (newValue ? index : -1));
   }
 
   const handleQuantityChange = (index: number, value: string, maxAvailable: number) => {
@@ -132,7 +133,7 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
 
     const data = {
       _id: group._id,
-      components: components
+      components: components.filter((c: any) => c.quantity > 0)
     };
     const members = group.members;
 
@@ -152,7 +153,11 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
   }
 
   const disableSaveButton = () => {
-    return !components?.length;
+    if (props.group?.components.length && !components.length) {
+      return false;
+    } else {
+      return !components?.length || components.some((component) => !component.quantity || !component.maxQuantity);
+    }
   }
 
   const resetValues = () => {
@@ -190,6 +195,7 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
   const deleteComponent = (component: any) => {
     const updatedComponents = components.filter((c: any) => c._id.toString() !== component._id.toString());
     setComponents(updatedComponents);
+    setSelectedTemplateIndex(-1);
   }
 
   return <Dialog open={props.open} onClose={props.onClose}>
@@ -200,23 +206,25 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
           Sabloni
         </Typography>
         {!!templates?.length && (
-          templates.map((template: any, index: number) => (
-            <Button
-              key={template.name}
-              variant={selectedTemplateIndex === index ? 'contained' : 'outlined'}
-              color={selectedTemplateIndex === index ? 'primary' : 'inherit'}
-              onClick={() => handleTemplateButtonClick(index)}
-              sx={{
-                minWidth: '150px',
-                maxWidth: '100%',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {template.name}
-            </Button>
-          ))
+          <Box display="flex" flexWrap="wrap" gap={1}>
+            {templates?.map((template: any, index: number) => (
+              <Button
+                key={template.name}
+                variant={selectedTemplateIndex === index ? 'contained' : 'outlined'}
+                color={selectedTemplateIndex === index ? 'primary' : 'inherit'}
+                onClick={() => handleTemplateButtonClick(index)}
+                sx={{
+                  flex: '0 0 auto',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  paddingX: 2,
+                }}
+              >
+                {template.name}
+              </Button>
+            ))}
+          </Box>
         )}
         <Typography variant={'subtitle1'}>
           Komponente
@@ -231,22 +239,24 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
                 justifyContent={'space-between'}
                 gap={2}
               >
-                <Box display={'flex'} alignItems={'center'} gap={2} flex={1} minWidth={0}>
+                <Box display={'flex'} flexWrap={'wrap'} alignItems={'center'} gap={2} flex={1} minWidth={0}>
                   <img
                     src={`${API_URL}/${component.image}`}
                     alt={component.name}
-                    width={40}
-                    height={40}
+                    width={60}
+                    height={60}
                     style={{ borderRadius: 4, objectFit: 'cover' }}
                   />
                   <Typography
-                    noWrap
                     sx={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      maxWidth: '1000px',
-                      flex: 1
+                      flex: 1,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "normal",
+                      lineHeight: 1.5,
                     }}
                   >
                     {component.name}
@@ -284,9 +294,11 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
         }
         {
           (addComponentButton && remainingComponents?.length) ?
-            <Button variant={'contained'} onClick={() => setAddComponentButton(false)}>
-              Dodaj komponentu
-            </Button>
+            <Box display={ 'flex'}>
+              <Button variant={'contained'} onClick={() => setAddComponentButton(false)}>
+                Dodaj komponentu
+              </Button>
+            </Box>
             :
             <Box display="flex" flexWrap="wrap" gap={2}>
               {
@@ -351,4 +363,4 @@ const AddStudent: React.FC<GroupComponentsProps> = (props: GroupComponentsProps)
 
 }
 
-export default AddStudent;
+export default GroupComponents;

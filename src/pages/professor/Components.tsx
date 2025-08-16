@@ -74,12 +74,13 @@ function Components() {
               <TableCell>Ime komponente</TableCell>
               <TableCell>Kolicina</TableCell>
               <TableCell>Dodeljeno</TableCell>
+              <TableCell>Slobodno</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {
-              !!components?.length && components.map((component, index) => (
+              !!components?.length && components.map((component) => (
                 <TableRow key={`tableRow${component?.name}`}>
                   <TableCell>
                     <img
@@ -91,6 +92,7 @@ function Components() {
                   <TableCell>{component.name}</TableCell>
                   <TableCell>{component.quantity}</TableCell>
                   <TableCell>{component.assigned}</TableCell>
+                  <TableCell>{component.quantity - component.assigned}</TableCell>
                   <TableCell>
                     <IconButton
                       color={'error'}

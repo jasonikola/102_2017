@@ -34,6 +34,13 @@ export const theme = createTheme({
         },
       }
     },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          minWidth: "800px",
+        },
+      },
+    },
   },
   typography: {
     button: {
