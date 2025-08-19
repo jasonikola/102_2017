@@ -5,6 +5,7 @@ import ProfessorPage from "./pages/professor/ProfessorPage";
 import HomePage from "./pages/HomePage";
 import ProfessorHomePage from "./pages/professor/ProfessorHomePage";
 import { WarningDialogProvider } from "./dialogs/WarningDialogProvider";
+import Points from "./pages/Points";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/professor" element={<ProfessorPage />} />
             <Route path="/professor/home/*" element={<ProfessorHomePage />} />
             <Route path="/home/*" element={<HomePage />} />
+            <Route path="/points" element={<Points />} />
             {/*<Route path="*" element={<Navigate to={'/home'} replace={true} />} />*/}
             <Route path="*" element={<Navigate to={'/professor'} replace={true} />} />
             {/*TODO if user then navigate to profesor/student page*/}

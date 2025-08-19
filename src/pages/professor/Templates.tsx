@@ -30,7 +30,7 @@ function Templates() {
     try {
       return await ApiService.getTemplates();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error  || 'Greška pri učitavanju šablona.');
     }
   }
 
@@ -76,16 +76,18 @@ function Templates() {
         setTemplates(updatedTemplates);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri brisanju šablona.');
     }
   }
 
   return (
     <>
       <TableContainer component={Paper}>
-        <Button variant={'contained'} onClick={openAddTemplateDialog}>
-          Dodaj sablon
-        </Button>
+        <Box display={'flex'} gap={1} p={1}>
+          <Button variant={'contained'} onClick={openAddTemplateDialog}>
+            Dodaj sablon
+          </Button>
+        </Box>
         <Table>
           <TableHead>
             <TableRow>

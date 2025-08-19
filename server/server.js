@@ -7,6 +7,7 @@ const groupsRoutes = require('./groups');
 const themesRoutes = require('./themes');
 const componentsRoutes = require('./components');
 const templatesRoutes = require('./templates');
+const pointsRoutes = require('./points');
 require('dotenv').config();
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/groups', groupsRoutes);
 app.use('/themes', themesRoutes);
 app.use('/components', componentsRoutes);
 app.use('/templates', templatesRoutes);
+app.use('/points', pointsRoutes);
 // TODO check for return of server calls
 
 app.use('/images', express.static(path.join(__dirname, 'images')));

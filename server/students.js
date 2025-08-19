@@ -46,8 +46,8 @@ router.get('/', async (req, res) => {
   try {
     console.log('/students get call');
     const db = await connectToDatabase();
-    const usersCollection = db.collection('students');
-    const studentsCursor = usersCollection.find();
+    const studentCollection = db.collection('students');
+    const studentsCursor = studentCollection.find();
     const students = await studentsCursor.toArray();
     // TODO check what would happen if there is a lot of students
     res.status(200).json(students);

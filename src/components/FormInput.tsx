@@ -8,6 +8,7 @@ interface FormInputProps {
   value: string;
   disabled: boolean;
   title: string;
+  placeholder: string;
 }
 
 const FormInput: React.FC<FormInputProps> = (props: FormInputProps) => {
@@ -19,23 +20,22 @@ const FormInput: React.FC<FormInputProps> = (props: FormInputProps) => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        gap: 2
+        gap: 2,
+        p: 1
       }}>
       <TextField
         value={props.value}
         onChange={props.onChange}
-        placeholder={'Ime grupe'}
-        fullWidth
+        placeholder={props.placeholder}
         required
         autoFocus
+        sx={{ width: 500 }}
       />
       <Button
         type={'submit'}
         variant={'contained'}
-        fullWidth
         onClick={props.onClick}
         disabled={props.disabled}
-        sx={{ minWidth: 'auto', px: 1.5, py: 0.5, fontSize: '0.75rem', maxWidth: '250px' }}
       >
         {props.title}
       </Button>

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import {
+  Box,
   Button,
   IconButton,
   Paper,
@@ -31,7 +32,7 @@ function Components() {
     try {
       return await ApiService.getComponents();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju komponenti.');
     }
   }
 
@@ -54,19 +55,21 @@ function Components() {
         setComponents(updatedComponents);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri brisanju komponente.');
     }
   }
 
   return (
     <>
       <TableContainer component={Paper}>
-        <Button
-          variant={'contained'}
-          onClick={openAddComponentDialog}
-        >
-          Dodaj komponentu
-        </Button>
+        <Box display={'flex'} gap={1} p={1}>
+          <Button
+            variant={'contained'}
+            onClick={openAddComponentDialog}
+          >
+            Dodaj komponentu
+          </Button>
+        </Box>
         <Table>
           <TableHead>
             <TableRow>

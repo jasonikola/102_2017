@@ -23,7 +23,7 @@ function Themes() {
     try {
       return await ApiService.getThemes();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error  || 'Greška pri učitavanju tema.');
     }
   }
 
@@ -40,7 +40,7 @@ function Themes() {
         setThemes(updatedThemes);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error  || 'Greška pri dodavanju teme.');
     }
   }
 
@@ -57,7 +57,7 @@ function Themes() {
         setThemes(updatedThemes);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greska pri brisanju teme.');
+      ErrorManager.show(error.response.data.error || 'Greška pri brisanju teme.');
     }
   }
 
@@ -70,6 +70,7 @@ function Themes() {
         value={newTheme}
         disabled={disableButton()}
         title={'Dodaj novu temu'}
+        placeholder={'Ime teme'}
       />
       <Table>
         <TableHead>

@@ -38,7 +38,7 @@ function Groups() {
     try {
       return await ApiService.getGroups();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju grupa.');
     }
   }
 
@@ -46,7 +46,7 @@ function Groups() {
     try {
       return await ApiService.getThemes();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju tema.');
     }
   }
 
@@ -63,7 +63,7 @@ function Groups() {
         setGroups(updatedGroups);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri dodavanju grupe.');
     }
   }
 
@@ -98,7 +98,7 @@ function Groups() {
         setGroups(updatedGroups);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greska pri brisanju grupe.');
+      ErrorManager.show(error.response.data.error || 'Greška pri brisanju grupe.');
     }
   }
 
@@ -187,6 +187,7 @@ function Groups() {
           value={newGroup}
           disabled={disableButton()}
           title={'Dodaj novu grupu'}
+          placeholder={'Ime grupe'}
         />
         <Table>
           <TableHead>

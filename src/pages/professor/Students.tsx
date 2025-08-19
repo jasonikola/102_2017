@@ -10,7 +10,7 @@ import {
   TableHead,
   TableRow,
   Select,
-  MenuItem, IconButton
+  MenuItem, IconButton, Box
 } from "@mui/material";
 import AddStudent from "../../dialogs/AddStudent";
 import ApiService from "../../ApiService";
@@ -51,7 +51,7 @@ function Students() {
         return response.data;
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju studenata.');
     }
   }
 
@@ -60,7 +60,7 @@ function Students() {
       const groups = await ApiService.getGroups();
       return groups.map((group: any) => group.name)
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju grupa.');
     }
   }
 
@@ -72,6 +72,10 @@ function Students() {
 
   const openAddStudentDialog = () => {
     setAddStudentOpen(true);
+  }
+
+  const openPointsTable = () => {
+    window.open("/points", "_blank");
   }
 
   const showPoints = (student: any) => {
@@ -99,7 +103,7 @@ function Students() {
           headers: { 'Content-Type': 'application/json' }
         });
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response.data.error || 'Greška pri dodeljivanju grupe.');
     }
   }
 
@@ -134,16 +138,20 @@ function Students() {
   return (
     <>
       <TableContainer component={Paper}>
-        <Button
-          variant={'contained'}
-          onClick={() => setAddCsvOpen(true)}
-        >
-          Dodaj CSV
-        </Button>
-        <>       </>
-        <Button variant={'contained'} onClick={openAddStudentDialog}>
-          Dodaj studenta
-        </Button>
+        <Box display="flex" gap={1} p={1}>
+          <Button
+            variant={'contained'}
+            onClick={() => setAddCsvOpen(true)}
+          >
+            Dodaj CSV
+          </Button>
+          <Button variant={'contained'} onClick={openAddStudentDialog}>
+            Dodaj studenta
+          </Button>
+          <Button variant={'contained'} onClick={openPointsTable}>
+            Tabela sa poenima
+          </Button>
+        </Box>
         <Table>
           <TableHead>
             <TableRow>
