@@ -1,4 +1,5 @@
 import {
+  Box,
   Button, IconButton, MenuItem,
   Paper, Select, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow
@@ -180,15 +181,17 @@ function Groups() {
   return (
     <>
       <TableContainer component={Paper}>
-        <FormInput
-          onSubmit={onSubmitHandler}
-          onChange={(e) => setNewGroup(e.target.value)}
-          onClick={onSubmitHandler}
-          value={newGroup}
-          disabled={disableButton()}
-          title={'Dodaj novu grupu'}
-          placeholder={'Ime grupe'}
-        />
+        <Box display="flex" gap={1} p={1}>
+          <FormInput
+            onSubmit={onSubmitHandler}
+            onChange={(e) => setNewGroup(e.target.value)}
+            onClick={onSubmitHandler}
+            value={newGroup}
+            disabled={disableButton()}
+            title={'Dodaj novu grupu'}
+            placeholder={'Ime grupe'}
+          />
+        </Box>
         <Table>
           <TableHead>
             <TableRow>

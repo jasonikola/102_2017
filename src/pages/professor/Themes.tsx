@@ -1,5 +1,15 @@
 import React, { useEffect } from 'react';
-import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from "@mui/material";
+import {
+  Box, Button,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import FormInput from "../../components/FormInput";
 import axios from "axios";
 import { ErrorManager } from "../../utils/ErrorManager";
@@ -23,7 +33,7 @@ function Themes() {
     try {
       return await ApiService.getThemes();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error  || 'Greška pri učitavanju tema.');
+      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju tema.');
     }
   }
 
@@ -40,7 +50,7 @@ function Themes() {
         setThemes(updatedThemes);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error  || 'Greška pri dodavanju teme.');
+      ErrorManager.show(error.response.data.error || 'Greška pri dodavanju teme.');
     }
   }
 
@@ -61,17 +71,35 @@ function Themes() {
     }
   }
 
+  const openThemesTable = () => {
+    window.open("/themes", "_blank");
+  }
+
   return (
     <TableContainer component={Paper}>
-      <FormInput
-        onSubmit={onSubmitHandler}
-        onChange={(e) => setNewTheme(e.target.value)}
-        onClick={onSubmitHandler}
-        value={newTheme}
-        disabled={disableButton()}
-        title={'Dodaj novu temu'}
-        placeholder={'Ime teme'}
-      />
+      <Box display={'flex'} gap={1} p={1}>
+        <FormInput
+          onSubmit={onSubmitHandler}
+          onChange={(e) => setNewTheme(e.target.value)}
+          onClick={onSubmitHandler}
+          value={newTheme}
+          disabled={disableButton()}
+          title={'Dodaj novu temu'}
+          placeholder={'Ime teme'}
+        />
+        <Box sx={{
+          height: 34,
+          borderLeft: '1px solid #ccc',
+          mx: 1,
+        }} />
+        <Button
+          variant={'contained'}
+          onClick={openThemesTable}
+          sx={{ height: '36.5px' }}
+        >
+          Tabela sa temama
+        </Button>
+      </Box>
       <Table>
         <TableHead>
           <TableRow>

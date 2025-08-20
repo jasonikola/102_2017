@@ -73,49 +73,50 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
 
   // TODO first letter uppercase
 
-  return <Dialog open={props.open} onClose={props.onClose}>
+  return <Dialog open={props.open} onClose={props.onClose} maxWidth={'sm'} fullWidth={true}>
     <DialogTitle>Dodaj studenta</DialogTitle>
     <DialogContent>
       <Box component={'form'} onSubmit={addStudent} display={'flex'} flexDirection={'column'} gap={2}>
-        <Box display={'flex'} alignItems={'center'} gap={1}>
-          <Box display={'flex'} flexDirection={'column'} flex={1}>
-            <Typography variant={'subtitle2'}>Broj indeksa</Typography>
+        <Box display={'flex'} flexDirection={'column'} gap={1}>
+          <Box display={'flex'} alignItems={'center'} gap={2}>
+            <Typography sx={{ minWidth: 120 }}>Broj indeksa:</Typography>
             <TextField
               value={indexNumber}
               onChange={(e) => numberFieldOnChange('index', e.target.value)}
               required={true}
-              fullWidth={true}
+              size={'small'}
+              sx={{ width: 200 }}
             />
           </Box>
-          <Typography variant={'h5'} mt={3}>/</Typography>
-          <Box display={'flex'} flexDirection={'column'} flex={1}>
-            <Typography variant={'subtitle2'}>Godina upisa</Typography>
+          <Box display={'flex'} alignItems={'center'} gap={2}>
+            <Typography sx={{ minWidth: 120 }}>Godina upisa:</Typography>
             <TextField
               value={year}
               onChange={(e) => numberFieldOnChange('year', e.target.value)}
               required={true}
-              fullWidth={true}
+              size={'small'}
+              sx={{ width: 200 }}
             />
           </Box>
         </Box>
-
-        <Box>
-          <Typography variant={'subtitle2'}>Ime</Typography>
+        <Box display={'flex'} alignItems={'center'} gap={2}>
+          <Typography sx={{ minWidth: 120 }}>Ime:</Typography>
           <TextField
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            fullWidth={true}
             required={true}
+            size={'small'}
+            sx={{ width: 250 }}
           />
         </Box>
-
-        <Box>
-          <Typography variant={'subtitle2'}>Prezime</Typography>
+        <Box display={'flex'} alignItems={'center'} gap={2}>
+          <Typography sx={{ minWidth: 120 }}>Prezime:</Typography>
           <TextField
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            fullWidth={true}
             required={true}
+            size={'small'}
+            sx={{ width: 250 }}
           />
         </Box>
       </Box>
@@ -128,14 +129,12 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
       >
         Dodaj
       </Button>
-      <Button
-        onClick={closeDialog}
-        variant={'text'}
-      >
+      <Button onClick={closeDialog} variant={'text'}>
         Zatvori
       </Button>
     </DialogActions>
   </Dialog>
+
 
 }
 

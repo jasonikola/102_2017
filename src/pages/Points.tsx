@@ -57,7 +57,7 @@ function Points() {
         <TableBody>
           {!!points?.length &&
             points.map((student: any) => (
-              <TableRow key={student._id}>
+              <TableRow key={student.index}>
                 <TableCell>{student.index}</TableCell>
                 <TableCell>{`${student.firstName} ${student.lastName}`}</TableCell>
                 <TableCell>{student.test1 ?? "-"}</TableCell>

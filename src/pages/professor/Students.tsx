@@ -148,6 +148,11 @@ function Students() {
           <Button variant={'contained'} onClick={openAddStudentDialog}>
             Dodaj studenta
           </Button>
+          <Box sx={{
+            height: 36,
+            borderLeft: '1px solid #ccc',
+            mx: 1,
+          }} />
           <Button variant={'contained'} onClick={openPointsTable}>
             Tabela sa poenima
           </Button>

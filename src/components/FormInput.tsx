@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent  } from 'react';
+import React, { ChangeEvent, FormEvent } from 'react';
 import { Box, Button, TextField, } from "@mui/material";
 
 interface FormInputProps {
@@ -17,12 +17,7 @@ const FormInput: React.FC<FormInputProps> = (props: FormInputProps) => {
     <Box
       component={'form'}
       onSubmit={props.onSubmit}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        p: 1
-      }}>
+    >
       <TextField
         value={props.value}
         onChange={props.onChange}
@@ -36,6 +31,7 @@ const FormInput: React.FC<FormInputProps> = (props: FormInputProps) => {
         variant={'contained'}
         onClick={props.onClick}
         disabled={props.disabled}
+        sx={{ ml: 1 }}
       >
         {props.title}
       </Button>
