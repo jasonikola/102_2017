@@ -26,7 +26,7 @@ function ProfessorPage() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        '/users/login',
+        '/auth/login',
         { email, password },
         {
           headers: { 'Content-Type': 'application/json' },

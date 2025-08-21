@@ -11,8 +11,8 @@ import {
   Typography
 } from "@mui/material";
 import ApiService from "../ApiService";
-import axios from "axios";
 import { ErrorManager } from "../utils/ErrorManager";
+import api from "../services/api";
 
 interface AddTemplateProps {
   open: boolean;
@@ -67,7 +67,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
       components: checkedComponents
     };
     try {
-      const response = await axios.put('/templates/add', data);
+      const response = await api.put('/templates/add', data);
       if (response.status === 200 && response.data) {
         resetValues();
         props.closeAndRefresh(response.data);
@@ -130,7 +130,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
       components: checkedComponents,
     };
     try {
-      const response = await axios.put(`/templates/edit/${_id}`, data);
+      const response = await api.put(`/templates/edit/${_id}`, data);
       if (response.status === 200) {
         resetValues();
         props.closeAndRefresh(response.data);

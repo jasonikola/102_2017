@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
 import {
   Button,
   Paper,
@@ -18,6 +17,7 @@ import StudentPoints from "../../dialogs/StudentPoints";
 import { ErrorManager } from "../../utils/ErrorManager";
 import AddCSV from "../../dialogs/AddCsv";
 import DeleteIcon from "@mui/icons-material/Delete";
+import api from "../../services/api";
 
 function Students() {
   const [students, setStudents] = useState<any[]>([]);
@@ -46,7 +46,7 @@ function Students() {
 
   const getStudents = async () => {
     try {
-      const response = await axios.get('/students');
+      const response = await api.get('/students');
       if (response.status === 200) {
         return response.data;
       }
@@ -97,7 +97,7 @@ function Students() {
 
   const updateGroupName = async (index: string, groupName: string) => {
     try {
-      await axios.post('/students/assignGroup',
+      await api.post('/students/assignGroup',
         { index, groupName: groupName !== noGroup ? groupName : '' },
         {
           headers: { 'Content-Type': 'application/json' }
@@ -125,7 +125,7 @@ function Students() {
 
   const deleteStudent = async (student: any) => {
     try {
-      const response = await axios.delete(`/students/delete/${student._id}`);
+      const response = await api.delete(`/students/delete/${student._id}`);
       if (response.status === 200) {
         const updatedStudents = students.filter((s: any) => s._id !== student._id);
         setStudents(updatedStudents);

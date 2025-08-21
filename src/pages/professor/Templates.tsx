@@ -10,11 +10,11 @@ import {
   TableRow
 } from "@mui/material";
 import AddTemplate from "../../dialogs/AddTemplate";
-import axios from "axios";
 import ApiService from "../../ApiService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
 import { ErrorManager } from "../../utils/ErrorManager";
+import api from "../../services/api";
 
 function Templates() {
   const [templates, setTemplates] = useState<any[]>([]);
@@ -70,7 +70,7 @@ function Templates() {
 
   const deleteTemplate = async (template: any) => {
     try {
-      const response = await axios.delete(`/templates/delete/${template._id}`);
+      const response = await api.delete(`/templates/delete/${template._id}`);
       if (response.status === 200) {
         const updatedTemplates = templates.filter((t: any) => t._id !== template._id);
         setTemplates(updatedTemplates);

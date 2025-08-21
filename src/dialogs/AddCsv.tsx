@@ -8,8 +8,8 @@ import {
   Typography
 } from '@mui/material';
 import React from 'react';
-import axios from 'axios';
 import { ErrorManager } from "../utils/ErrorManager";
+import api from "../services/api";
 
 interface AddCSVProps {
   open: boolean;
@@ -46,7 +46,7 @@ const AddCSV: React.FC<AddCSVProps> = (props: AddCSVProps) => {
     formData.append('file', csvFile);
 
     try {
-      const response = await axios.post('/students/addCsv', formData, {
+      const response = await api.post('/students/addCsv', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

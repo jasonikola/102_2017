@@ -1,23 +1,24 @@
 import axios from "axios";
+import api from "./services/api";
 
 class ApiService {
   static async getGroups() {
-    const response = await axios.get('/groups');
+    const response = await api.get('/groups');
     return response.data;
   }
 
   static async getThemes() {
-    const response = await axios.get('/themes');
+    const response = await api.get('/themes');
     return response.data;
   }
 
   static async getComponents() {
-    const response = await axios.get('/components');
+    const response = await api.get('/components');
     return response.data;
   }
 
   static async getTemplates() {
-    const response = await axios.get('/templates');
+    const response = await api.get('/templates');
     return response.data;
   }
 }

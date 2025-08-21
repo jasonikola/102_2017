@@ -5,12 +5,12 @@ import {
   TableContainer, TableHead, TableRow
 } from "@mui/material";
 import React, { useEffect } from "react";
-import axios from "axios";
 import FormInput from "../../components/FormInput";
 import ApiService from "../../ApiService";
 import GroupComponents from "../../dialogs/GroupComponents";
 import { ErrorManager } from "../../utils/ErrorManager";
 import DeleteIcon from "@mui/icons-material/Delete";
+import api from "../../services/api";
 
 function Groups() {
   const [newGroup, setNewGroup] = React.useState('');
@@ -58,7 +58,7 @@ function Groups() {
     }
 
     try {
-      const response = await axios.put('/groups/add', data);
+      const response = await api.put('/groups/add', data);
       if (response.status === 200 && response.data) {
         const updatedGroups: any[] = [...groups, response.data];
         setGroups(updatedGroups);
@@ -93,7 +93,7 @@ function Groups() {
 
   const deleteGroup = async (group: any) => {
     try {
-      const response = await axios.delete(`/groups/delete/${group._id}`);
+      const response = await api.delete(`/groups/delete/${group._id}`);
       if (response.status === 200) {
         const updatedGroups = groups.filter((g: any) => g._id !== group._id);
         setGroups(updatedGroups);
@@ -116,7 +116,7 @@ function Groups() {
     setGroups(updatedGroups);
 
     try {
-      await axios.post('/groups/assignTheme',
+      await api.post('/groups/assignTheme',
         { groupName, themeName: themeName !== noTheme ? themeName : '' },
         {
           headers: { 'Content-Type': 'application/json' }

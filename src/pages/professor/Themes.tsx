@@ -11,10 +11,10 @@ import {
   TableRow,
 } from "@mui/material";
 import FormInput from "../../components/FormInput";
-import axios from "axios";
 import { ErrorManager } from "../../utils/ErrorManager";
 import ApiService from "../../ApiService";
 import DeleteIcon from "@mui/icons-material/Delete";
+import api from "../../services/api";
 
 // TODO add component model
 
@@ -43,7 +43,7 @@ function Themes() {
     const data = { name: newTheme };
 
     try {
-      const response = await axios.put(`/themes/add`, data);
+      const response = await api.put(`/themes/add`, data);
       if (response.status === 200 && response.data) {
         const updatedThemes = [...themes];
         updatedThemes.unshift(response.data);
@@ -61,7 +61,7 @@ function Themes() {
 
   const deleteTheme = async (theme: any) => {
     try {
-      const response = await axios.delete(`/themes/delete/${theme._id}`);
+      const response = await api.delete(`/themes/delete/${theme._id}`);
       if (response.status === 200) {
         const updatedThemes = themes.filter((t: any) => t._id !== theme._id);
         setThemes(updatedThemes);

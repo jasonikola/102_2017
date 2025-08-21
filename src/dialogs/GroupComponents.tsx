@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import ApiService from "../ApiService";
-import axios from "axios";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ErrorManager } from "../utils/ErrorManager";
+import api from "../services/api";
 
 interface GroupComponentsProps {
   open: boolean;
@@ -138,7 +138,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
     const members = group.members;
 
     try {
-      const response = await axios.post('/groups/assignComponents', data);
+      const response = await api.post('/groups/assignComponents', data);
       if (response?.status === 200 && response.data) {
         setReturnValue({ ...response.data, members });
       }

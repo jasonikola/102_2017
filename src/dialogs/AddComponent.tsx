@@ -9,8 +9,8 @@ import {
   Typography
 } from '@mui/material';
 import React from 'react';
-import axios from 'axios';
 import { ErrorManager } from "../utils/ErrorManager";
+import api from "../services/api";
 
 interface AddComponentProps {
   open: boolean;
@@ -34,7 +34,7 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
     formData.append('image', image);
 
     try {
-      const response = await axios.post('/components/add', formData, {
+      const response = await api.post('/components/add', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

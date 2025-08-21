@@ -12,10 +12,10 @@ import {
   TableRow,
 } from "@mui/material";
 import AddComponent from "../../dialogs/AddComponent";
-import axios from "axios";
 import ApiService from "../../ApiService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ErrorManager } from "../../utils/ErrorManager";
+import api from "../../services/api";
 
 // TODO add component model
 
@@ -49,7 +49,7 @@ function Components() {
 
   const deleteComponent = async (component: any) => {
     try {
-      const response = await axios.delete(`/components/delete/${component._id}`);
+      const response = await api.delete(`/components/delete/${component._id}`);
       if (response.status === 200) {
         const updatedComponents = components.filter((c: any) => c._id !== component._id);
         setComponents(updatedComponents);

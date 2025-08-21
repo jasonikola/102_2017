@@ -9,8 +9,8 @@ import {
   Typography
 } from '@mui/material';
 import React, { useEffect } from 'react';
-import axios from 'axios';
 import { ErrorManager } from "../utils/ErrorManager";
+import api from "../services/api";
 
 interface StudentPointsProps {
   open: boolean;
@@ -78,7 +78,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
     }
 
     try {
-      const response = await axios.post('/students/savePoints', data);
+      const response = await api.post('/students/savePoints', data);
       if (response?.status === 200 && response.data) {
         console.log('Success!');
       }

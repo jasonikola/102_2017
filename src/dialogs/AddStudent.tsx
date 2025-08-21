@@ -9,8 +9,8 @@ import {
   Typography
 } from "@mui/material";
 import React from "react";
-import axios from "axios";
 import { ErrorManager } from "../utils/ErrorManager";
+import api from "../services/api";
 
 interface AddStudentProps {
   open: boolean;
@@ -32,7 +32,7 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
     };
 
     try {
-      const response = await axios.put('/students/add', data);
+      const response = await api.put('/students/add', data);
       if (response.status === 200 && response.data) {
         resetValues();
         props.closeAndRefresh(response.data);
