@@ -7,6 +7,7 @@ import { Box, Tab, Tabs } from "@mui/material";
 import Groups from "./Groups";
 import Themes from "./Themes";
 import Templates from "./Templates";
+import ProtectedRoute from "../ProtertedRoute";
 
 function ProfessorHomePage() {
 
@@ -39,7 +40,7 @@ function ProfessorHomePage() {
   };
 
   return (
-    <>
+    <ProtectedRoute>
       <Header />
       <Box sx={{ p: 1 }}>
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -51,14 +52,14 @@ function ProfessorHomePage() {
         </Box>
         <Routes>
           <Route path='/' element={<Navigate to={'./students'} replace={true} />} />
-          <Route path='/components' element={<Components />} />
           <Route path='/students' element={<Students />} />
+          <Route path='/components' element={<Components />} />
           <Route path='/groups' element={<Groups />} />
           <Route path='/themes' element={<Themes />} />
           <Route path='/templates' element={<Templates />} />
         </Routes>
       </Box>
-    </>
+    </ProtectedRoute>
   );
 }
 

@@ -11,6 +11,7 @@ const themesRoutes = require('./themes');
 const componentsRoutes = require('./components');
 const templatesRoutes = require('./templates');
 const pointsRoutes = require('./points');
+const projectThemesRoutes = require('./projectThemes');
 const authRoutes = require('./auth');
 require('dotenv').config();
 
@@ -32,6 +33,7 @@ app.use('/themes', authMiddleware, themesRoutes);
 app.use('/components', authMiddleware, componentsRoutes);
 app.use('/templates', authMiddleware, templatesRoutes);
 app.use('/points', pointsRoutes);
+app.use('/projectThemes', projectThemesRoutes);
 // TODO check for return of server calls
 
 app.use('/images', express.static(path.join(__dirname, 'images')));

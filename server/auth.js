@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { connectToDatabase } = require("./DatabaseConnection");
+const { authMiddleware } = require("./middleware");
 
 const router = express.Router();
 
@@ -73,9 +74,9 @@ router.post("/logout", (req, res) => {
 router.post('/refresh', (req, res) => {
   console.log('/auth/refresh call');
   const refreshToken = req.cookies.refreshToken;
-  console.log(req.cookies);
   if (!refreshToken) {
     res.status(401).json({ message: 'Greska sa refresh tokenom.' });
+    // TODO chech all messages
   }
 
   try {
@@ -93,6 +94,24 @@ router.post('/refresh', (req, res) => {
   } catch (error) {
     res.status(500).send({ error: 'Internal server Error' });
   }
+});
+
+router.get("/me", (req, res) => {
+  console.log('/auth/me call');
+  const token = req.cookies.accessToken;
+  if (!token) return res.status(401).json({ message: "Korisnik nije prijavljen." });
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).send('Korisnik prijavljen.');
+  } catch {
+    res.status(401).json({ message: "Invalid or expired token" });
+  }
+});
+
+router.get("/check", authMiddleware, (req, res) => {
+  console.log('/auth/check call');
+  res.sendStatus(200);
 });
 
 module.exports = router;

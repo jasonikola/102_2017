@@ -9,7 +9,7 @@ import {
   TableRow
 } from "@mui/material";
 import { ErrorManager } from "../utils/ErrorManager";
-import ApiService from "../ApiService";
+import axios from "axios";
 
 function ThemesTable() {
   const [themes, setThemes] = useState<any[]>([]);
@@ -22,7 +22,10 @@ function ThemesTable() {
 
   const getThemes = async () => {
     try {
-      return await ApiService.getThemes();
+      const response = await axios.get("/projectThemes");
+      if (response.status === 200) {
+        return response.data;
+      }
     } catch (error: any) {
       ErrorManager.show(error.response?.data?.error || 'Greška pri učitavanju tema za seminarski.');
     }

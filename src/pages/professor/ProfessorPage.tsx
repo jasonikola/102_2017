@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import axios from "axios";
 import { Box, Button, Checkbox, Container, FormControlLabel, Paper, TextField, Typography } from "@mui/material";
+import axios from "axios";
 
 function ProfessorPage() {
   const navigate = useNavigate();
@@ -14,6 +14,8 @@ function ProfessorPage() {
   const emailRegex: RegExp = /^[a-zA-Z0-9-]+@pmf\.kg\.ac\.rs$/;
 
   useEffect(() => {
+    checkAuth();
+
     let password = Cookies.get('password');
     let email = Cookies.get('email');
 
@@ -22,24 +24,27 @@ function ProfessorPage() {
     email && password && setRememberMe(true);
   }, []);
 
+  const checkAuth = async () => {
+    try {
+      const response = await axios.get("/auth/me");
+      if (response.status === 200) {
+        navigate('./home', { replace: true });
+      }
+    } catch {
+
+    }
+  }
+
   const onSubmitHandler = async (event: any) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        '/auth/login',
-        { email, password },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        }
-      );
+      const response = await axios.post('/auth/login', { email, password });
 
       const result = response.data;
 
       if (response.status === 200) {
         if (rememberMe) {
           Cookies.set('email', email);
-          Cookies.set('password', password);
         } else {
           setEmail('');
           setPassword('');
