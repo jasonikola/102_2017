@@ -56,7 +56,7 @@ router.get('/', async (req, res) => {
     );
     res.status(200).json(returnValue);
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -84,12 +84,12 @@ router.post('/assignTheme', async (req, res) => {
       }
       await groupsCollection.updateOne({ name: groupName }, { $set: { theme: themeName } });
 
-      res.status(200).json('Tema grupe uspesno promenjena');
+      res.status(200).json({ message: 'Tema grupe uspešno promenjena.' });
     } else {
       res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
     }
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -101,7 +101,7 @@ router.post('/assignComponents', async (req, res) => {
   }
 
   if (!ObjectId.isValid(_id)) {
-    res.status(404).send({ error: 'Nije validan id grupe.' });
+    res.status(404).json({ error: 'Nije validan id grupe.' });
   }
 
   try {
@@ -110,7 +110,7 @@ router.post('/assignComponents', async (req, res) => {
     const group = await groupsCollection.findOne({ _id: new ObjectId(_id) });
 
     if (!group) {
-      res.status(404).send({ error: 'Grupa ne postoji.' });
+      res.status(404).json({ error: 'Grupa ne postoji.' });
     }
 
     const componentsCollection = db.collection('components');
@@ -126,7 +126,7 @@ router.post('/assignComponents', async (req, res) => {
           const assigned = globalComponent.assigned - groupComponent.quantity;
           await componentsCollection.updateOne({ _id: new ObjectId(globalComponent._id) }, { $set: { assigned: assigned } });
         } else {
-          res.status(404).send({ error: 'Komponenta ne postoji.' });
+          res.status(404).json({ error: 'Komponenta ne postoji.' });
         }
       }
     }
@@ -145,7 +145,7 @@ router.post('/assignComponents', async (req, res) => {
       }
       const componentGlobal = allComponents.find((aComponent) => aComponent._id.toString() === component._id.toString());
       if (!componentGlobal) {
-        res.status(404).send({ error: 'Komponenta ne postoji.' });
+        res.status(404).json({ error: 'Komponenta ne postoji.' });
       }
       componentGlobal.assigned -= decrement;
       componentGlobal.assigned += component.quantity;
@@ -156,7 +156,7 @@ router.post('/assignComponents', async (req, res) => {
 
     res.status(200).json(group);
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -165,7 +165,7 @@ router.delete('/delete/:id', async (req, res) => {
   const groupId = req.params.id;
 
   if (!ObjectId.isValid(groupId)) {
-    res.status(404).send({ error: 'Nije validan id grupe.' });
+    res.status(404).json({ error: 'Nije validan id grupe.' });
   }
 
   try {
@@ -183,7 +183,7 @@ router.delete('/delete/:id', async (req, res) => {
       for (const component of components) {
         const dbComponent = await componentsCollection.findOne({ _id: new ObjectId(component._id) });
         if (!dbComponent) {
-          res.status(401).send({ error: 'Došlo je do greške.' });
+          res.status(401).json({ error: 'Došlo je do greške.' });
         }
         dbComponent.assigned -= component.quantity;
         await componentsCollection.updateOne({ _id: new ObjectId(dbComponent._id) }, { $set: { assigned: dbComponent.assigned } });
@@ -199,9 +199,9 @@ router.delete('/delete/:id', async (req, res) => {
     await studentsCollection.updateMany({ group: group.name }, { $set: { group: '' } });
 
     await groupsCollection.deleteOne({ _id: new ObjectId(groupId) });
-    res.status(200).json('Grupa uspešno isbrisana.');
+    res.status(200).json({ message: 'Grupa uspešno isbrisana.' });
   } catch (e) {
-    res.status(500).send({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

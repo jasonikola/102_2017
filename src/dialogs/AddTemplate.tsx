@@ -13,6 +13,7 @@ import {
 import ApiService from "../ApiService";
 import { ErrorManager } from "../utils/ErrorManager";
 import api from "../services/api";
+import { useSnackbar } from "../components/SnachbarProvider";
 
 interface AddTemplateProps {
   open: boolean;
@@ -25,6 +26,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
   const [name, setName] = React.useState('');
   const [components, setComponents] = React.useState<any[]>([]);
   const isEdit = !!props.template;
+  const { showSuccessMessage } = useSnackbar();
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -71,6 +73,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
       if (response.status === 200 && response.data) {
         resetValues();
         props.closeAndRefresh(response.data);
+        showSuccessMessage('Šablon uspešno dodat.');
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error);
@@ -133,6 +136,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
       const response = await api.put(`/templates/edit/${_id}`, data);
       if (response.status === 200) {
         resetValues();
+        showSuccessMessage('Šablon uspešno izmenjen.');
         props.closeAndRefresh(response.data);
       }
     } catch (error: any) {
@@ -208,6 +212,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
                     onChange={(event: any) => handleQuantityChange(index, event.target.value)}
                     sx={{ width: '100px' }}
                     disabled={!component.checked}
+                    autoComplete={'off'}
                   />
                 </Box>
               ))}

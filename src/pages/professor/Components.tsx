@@ -16,10 +16,12 @@ import ApiService from "../../ApiService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ErrorManager } from "../../utils/ErrorManager";
 import api from "../../services/api";
+import { useSnackbar } from "../../components/SnachbarProvider";
 
 function Components() {
   const [components, setComponents] = React.useState<any[]>([]);
   const [addComponentOpen, setAddComponentOpen] = React.useState(false);
+  const { showSuccessMessage } = useSnackbar();
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -51,6 +53,7 @@ function Components() {
       if (response.status === 200) {
         const updatedComponents = components.filter((c: any) => c._id !== component._id);
         setComponents(updatedComponents);
+        showSuccessMessage(response.data?.message);
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error || 'Greška pri brisanju komponente.');

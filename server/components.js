@@ -55,7 +55,7 @@ router.post('/add', upload.single('image'), async (req, res) => {
     await componentsCollection.insertOne(data);
     res.status(200).json(data);
   } catch (e) {
-    res.status(500).send({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -70,7 +70,7 @@ router.get('/', async (req, res) => {
 
     res.status(200).json(components);
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -79,7 +79,7 @@ router.delete('/delete/:id', async (req, res) => {
   const componentId = req.params.id;
 
   if (!ObjectId.isValid(componentId)) {
-    res.status(404).send({ error: 'Nije validan id komponente.' });
+    res.status(404).json({ error: 'Nije validan id komponente.' });
   }
 
   try {
@@ -99,9 +99,9 @@ router.delete('/delete/:id', async (req, res) => {
 
     await componentsCollection.deleteOne({ _id: new ObjectId(componentId) });
 
-    res.status(200).send('Komponente je obrisana.');
+    res.status(200).json({ message: 'Komponente uspešno obrisana.' });
   } catch (e) {
-    res.status(500).send({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

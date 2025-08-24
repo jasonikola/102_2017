@@ -11,6 +11,7 @@ import GroupComponents from "../../dialogs/GroupComponents";
 import { ErrorManager } from "../../utils/ErrorManager";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../services/api";
+import { useSnackbar } from "../../components/SnachbarProvider";
 
 function Groups() {
   const [newGroup, setNewGroup] = React.useState('');
@@ -20,6 +21,7 @@ function Groups() {
   const [componentsDialogOpen, setComponentsDialogOpen] = React.useState(false);
   const [selectedGroup, setSelectedGroup] = React.useState<any>();
   const noTheme = 'Bez teme';
+  const { showSuccessMessage } = useSnackbar();
 
   useEffect(() => {
     getGroups().then((groups: any) => {
@@ -62,6 +64,7 @@ function Groups() {
       if (response.status === 200 && response.data) {
         const updatedGroups: any[] = [...groups, response.data];
         setGroups(updatedGroups);
+        showSuccessMessage('Grupa uspešno dodata.');
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error || 'Greška pri dodavanju grupe.');
@@ -97,6 +100,7 @@ function Groups() {
       if (response.status === 200) {
         const updatedGroups = groups.filter((g: any) => g._id !== group._id);
         setGroups(updatedGroups);
+        showSuccessMessage(response.data.message);
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error || 'Greška pri brisanju grupe.');
@@ -116,11 +120,14 @@ function Groups() {
     setGroups(updatedGroups);
 
     try {
-      await api.post('/groups/assignTheme',
+      const response = await api.post('/groups/assignTheme',
         { groupName, themeName: themeName !== noTheme ? themeName : '' },
         {
           headers: { 'Content-Type': 'application/json' }
         });
+      if (response.status === 200 && response.data) {
+        showSuccessMessage(response.data.message);
+      }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error);
     }

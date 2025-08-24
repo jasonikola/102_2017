@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import { ErrorManager } from "../utils/ErrorManager";
 import api from "../services/api";
+import { useSnackbar } from "../components/SnachbarProvider";
 
 interface AddCSVProps {
   open: boolean;
@@ -19,6 +20,7 @@ interface AddCSVProps {
 
 const AddCSV: React.FC<AddCSVProps> = (props: AddCSVProps) => {
   const [csvFile, setCsvFile] = React.useState<File | null>(null);
+  const {showSuccessMessage} = useSnackbar();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -54,6 +56,7 @@ const AddCSV: React.FC<AddCSVProps> = (props: AddCSVProps) => {
 
       if (response.status === 200 && response.data) {
         resetValues();
+        showSuccessMessage('Studenti uspešno dodati.');
         props.closeAndRefresh(response.data);
       }
     } catch (error: any) {

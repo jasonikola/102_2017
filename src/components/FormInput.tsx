@@ -24,6 +24,7 @@ const FormInput: React.FC<FormInputProps> = (props: FormInputProps) => {
         placeholder={props.placeholder}
         required
         autoFocus
+        autoComplete={'off'}
         sx={{ width: 500 }}
       />
       <Button

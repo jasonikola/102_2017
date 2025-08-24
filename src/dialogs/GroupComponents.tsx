@@ -14,6 +14,7 @@ import ApiService from "../ApiService";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ErrorManager } from "../utils/ErrorManager";
 import api from "../services/api";
+import {useSnackbar} from "../components/SnachbarProvider";
 
 interface GroupComponentsProps {
   open: boolean;
@@ -28,6 +29,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
   const [selectedTemplateIndex, setSelectedTemplateIndex] = React.useState(-1);
   const [returnValue, setReturnValue] = React.useState<any>(null);
   const [addComponentButton, setAddComponentButton] = React.useState(true);
+  const { showSuccessMessage } = useSnackbar();
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -141,6 +143,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
       const response = await api.post('/groups/assignComponents', data);
       if (response?.status === 200 && response.data) {
         setReturnValue({ ...response.data, members });
+        showSuccessMessage('Komponente grupe uspešno sačuvane.');
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error);
@@ -269,6 +272,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
                   value={component.quantity}
                   onChange={(event: any) => handleQuantityChange(index, event.target.value, component.maxQuantity)}
                   sx={{ width: '100px' }}
+                  autoComplete={'off'}
                 />
                 <Typography
                   noWrap

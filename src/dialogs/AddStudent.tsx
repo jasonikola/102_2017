@@ -11,6 +11,7 @@ import {
 import React from "react";
 import { ErrorManager } from "../utils/ErrorManager";
 import api from "../services/api";
+import { useSnackbar } from "../components/SnachbarProvider";
 
 interface AddStudentProps {
   open: boolean;
@@ -23,6 +24,7 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
   const [year, setYear] = React.useState<any>(0);
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
+  const { showSuccessMessage } = useSnackbar();
 
   const addStudent = async () => {
     const data = {
@@ -36,6 +38,7 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
       if (response.status === 200 && response.data) {
         resetValues();
         props.closeAndRefresh(response.data);
+        showSuccessMessage('Student uspešno dodat.');
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error);
@@ -86,6 +89,7 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
               required={true}
               size={'small'}
               sx={{ width: 200 }}
+              autoComplete={'off'}
             />
           </Box>
           <Box display={'flex'} alignItems={'center'} gap={2}>
@@ -96,6 +100,7 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
               required={true}
               size={'small'}
               sx={{ width: 200 }}
+              autoComplete={'off'}
             />
           </Box>
         </Box>
@@ -107,6 +112,7 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
             required={true}
             size={'small'}
             sx={{ width: 250 }}
+            autoComplete={'off'}
           />
         </Box>
         <Box display={'flex'} alignItems={'center'} gap={2}>
@@ -117,6 +123,7 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
             required={true}
             size={'small'}
             sx={{ width: 250 }}
+            autoComplete={'off'}
           />
         </Box>
       </Box>

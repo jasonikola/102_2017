@@ -18,6 +18,7 @@ import { ErrorManager } from "../../utils/ErrorManager";
 import AddCSV from "../../dialogs/AddCsv";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../services/api";
+import { useSnackbar } from "../../components/SnachbarProvider";
 
 function Students() {
   const [students, setStudents] = useState<any[]>([]);
@@ -29,6 +30,8 @@ function Students() {
   const [studentForPoints, setStudentForPoints] = useState<any>(null);
   const [refresh, setRefresh] = useState(false);
   const noGroup = 'Bez grupe';
+
+  const { showSuccessMessage } = useSnackbar();
 
   useEffect(() => {
     getStudents().then((students: any) => {
@@ -97,11 +100,14 @@ function Students() {
 
   const updateGroupName = async (index: string, groupName: string) => {
     try {
-      await api.post('/students/assignGroup',
+      const response = await api.post('/students/assignGroup',
         { index, groupName: groupName !== noGroup ? groupName : '' },
         {
           headers: { 'Content-Type': 'application/json' }
         });
+      if (response.status === 200) {
+        showSuccessMessage(response.data?.message);
+      }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error || 'Greška pri dodeljivanju grupe.');
     }
@@ -129,9 +135,10 @@ function Students() {
       if (response.status === 200) {
         const updatedStudents = students.filter((s: any) => s._id !== student._id);
         setStudents(updatedStudents);
+        showSuccessMessage(response.data.message);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data?.error || "Greška pri brisanju studenta.");
     }
   }
 

@@ -15,6 +15,7 @@ import { ErrorManager } from "../../utils/ErrorManager";
 import ApiService from "../../ApiService";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../services/api";
+import { useSnackbar } from "../../components/SnachbarProvider";
 
 // TODO add component model
 
@@ -22,6 +23,7 @@ function Themes() {
 
   const [newTheme, setNewTheme] = React.useState<string>('');
   const [themes, setThemes] = React.useState<any[]>([]);
+  const { showSuccessMessage } = useSnackbar();
 
   useEffect(() => {
     getThemes().then((themes: any) => {
@@ -46,8 +48,9 @@ function Themes() {
       const response = await api.put(`/themes/add`, data);
       if (response.status === 200 && response.data) {
         const updatedThemes = [...themes];
-        updatedThemes.unshift(response.data);
+        updatedThemes.push(response.data);
         setThemes(updatedThemes);
+        showSuccessMessage('Tema uspešno dodata.');
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error || 'Greška pri dodavanju teme.');
@@ -65,6 +68,7 @@ function Themes() {
       if (response.status === 200) {
         const updatedThemes = themes.filter((t: any) => t._id !== theme._id);
         setThemes(updatedThemes);
+        showSuccessMessage(response.data?.message);
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error || 'Greška pri brisanju teme.');

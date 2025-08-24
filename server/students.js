@@ -12,9 +12,9 @@ router.put('/add', async (req, res) => {
   const { index, firstName, lastName } = req.body;
 
   if (!index || !firstName || !lastName) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
-// TODO add years to every students, add year on request and in if statement
+
   try {
     const db = await connectToDatabase();
     const studentsCollection = db.collection('students');
@@ -30,15 +30,14 @@ router.put('/add', async (req, res) => {
     }
 
     if (student) {
-      res.status(401).json("Korisnik sa datim indexom vec postoji");
+      res.status(401).json({ error: "Korisnik sa datim indexom već postoji" });
     } else {
       const data = { index, firstName, lastName, group, points };
       await studentsCollection.insertOne(data);
-      const { _id, ...dataWithoutId } = data;
-      res.status(200).json(dataWithoutId);
+      res.status(200).json(data);
     }
   } catch (e) {
-    res.status(500).send('Internal server error');
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -52,7 +51,7 @@ router.get('/', async (req, res) => {
     // TODO check what would happen if there is a lot of students
     res.status(200).json(students);
   } catch (error) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -78,12 +77,12 @@ router.post('/assignGroup', async (req, res) => {
         }
       }
       await studentsCollection.updateOne({ index }, { $set: { group: groupName } });
-      res.status(200).json("Grupa studenta promenjena.");
+      res.status(200).json({ message: "Grupa studenta uspešno promenjena." });
     } else {
       res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
     }
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -93,11 +92,11 @@ router.post('/savePoints', async (req, res) => {
   const { studentId, points } = req.body;
 
   if (!studentId || !points) {
-    res.status(400).json("Došlo je do greške, pokušajte ponovo.");
+    res.status(400).json({ error: "Došlo je do greške, pokušajte ponovo." });
   }
 
   if (!ObjectId.isValid(studentId)) {
-    res.status(404).send('Nije validan id studenta.');
+    res.status(404).json({ error: 'Nije validan id studenta.' });
   }
 
   try {
@@ -106,12 +105,12 @@ router.post('/savePoints', async (req, res) => {
     const studentObjectId = new ObjectId(studentId)
     const student = await studentsCollection.findOne({ _id: studentObjectId });
     if (!student) {
-      res.status(404).send('Student ne postoji.');
+      res.status(404).json({ error: 'Student ne postoji.' });
     }
     await studentsCollection.updateOne({ _id: studentObjectId }, { $set: { points } });
-    res.status(200).json('Poeni studenta uspešno promenjeni.');
+    res.status(200).json({ message: 'Poeni studenta uspešno promenjeni.' });
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -156,9 +155,9 @@ router.post('/addCsv', upload.single('file'), async (req, res) => {
       }
     }
 
-    res.status(200).json('Korisnici uspešno dodati.');
+    res.status(200).json({ message: 'Korisnici uspešno dodati.' });
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -167,7 +166,7 @@ router.delete('/delete/:id', async (req, res) => {
   const studentId = req.params.id;
 
   if (!ObjectId.isValid(studentId)) {
-    res.status(404).send({ error: 'Nije validan id studenta.' });
+    res.status(404).json({ error: 'Nije validan id studenta.' });
   }
 
   try {
@@ -180,9 +179,9 @@ router.delete('/delete/:id', async (req, res) => {
     }
 
     await studentsCollection.deleteOne({ _id: new ObjectId(studentId) });
-    res.status(200).send('Student uspešno obrisan');
+    res.status(200).json({ message: 'Student uspešno obrisan.' });
   } catch (e) {
-    res.status(500).send({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

@@ -25,7 +25,7 @@ router.put('/add', async (req, res) => {
       res.status(200).json(data);
     }
   } catch (e) {
-    res.status(500).send({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
 
     res.status(200).json(templates);
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -48,7 +48,7 @@ router.delete('/delete/:id', async (req, res) => {
   const templateId = req.params.id;
 
   if (!ObjectId.isValid(templateId)) {
-    res.status(404).send({ error: 'Nije validan id šablona.' });
+    res.status(404).json({ error: 'Nije validan id šablona.' });
   }
   try {
     const db = await connectToDatabase();
@@ -59,9 +59,9 @@ router.delete('/delete/:id', async (req, res) => {
     }
     await templatesCollection.deleteOne({ _id: new ObjectId(templateId) });
 
-    res.status(200).send('Šablon je izbrisan');
+    res.status(200).json({ message: 'Šablon uspešno obrisan.' });
   } catch (e) {
-    res.status(500).send({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -101,7 +101,7 @@ router.put('/edit/:id', async (req, res) => {
     const updatedTemplate = await templatesCollection.findOne({ _id: objectId });
     return res.status(200).json(updatedTemplate);
   } catch (e) {
-    res.status(500).send({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

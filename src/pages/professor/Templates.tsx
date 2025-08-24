@@ -15,11 +15,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
 import { ErrorManager } from "../../utils/ErrorManager";
 import api from "../../services/api";
+import { useSnackbar } from "../../components/SnachbarProvider";
 
 function Templates() {
   const [templates, setTemplates] = useState<any[]>([]);
   const [templateToEdit, setTemplateToEdit] = useState<any>(null);
   const [addTemplateOpen, setAddTemplateOpen] = useState(false);
+  const { showSuccessMessage } = useSnackbar();
   const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -30,7 +32,7 @@ function Templates() {
     try {
       return await ApiService.getTemplates();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error  || 'Greška pri učitavanju šablona.');
+      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju šablona.');
     }
   }
 
@@ -51,7 +53,7 @@ function Templates() {
       });
       setTemplateToEdit(null);
     } else {
-      updatedTemplates = [template, ...templates];
+      updatedTemplates = [...templates, template];
     }
     setTemplates(updatedTemplates);
   }
@@ -74,6 +76,7 @@ function Templates() {
       if (response.status === 200) {
         const updatedTemplates = templates.filter((t: any) => t._id !== template._id);
         setTemplates(updatedTemplates);
+        showSuccessMessage(response.data?.message);
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error || 'Greška pri brisanju šablona.');

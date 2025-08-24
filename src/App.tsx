@@ -7,22 +7,25 @@ import { WarningDialogProvider } from "./dialogs/WarningDialogProvider";
 import Points from "./pages/Points";
 import ThemesTable from "./pages/ThemesTable";
 import ArduinoFact from "./pages/ArduinoFact";
+import { SnackbarProvider } from "./components/SnachbarProvider";
 
 function App() {
   return (
     <div className="App">
-      <WarningDialogProvider>
-        <Router>
-          <Routes>
-            <Route path="/professor" element={<ProfessorPage />} />
-            <Route path="/professor/home/*" element={<ProfessorHomePage />} />
-            <Route path="/points" element={<Points />} />
-            <Route path="/themes" element={<ThemesTable />} />
-            <Route path="/fact" element={<ArduinoFact />} />
-            <Route path="*" element={<Navigate to={'/fact'} replace={true} />}/>
-          </Routes>
-        </Router>
-      </WarningDialogProvider>
+      <SnackbarProvider>
+        <WarningDialogProvider>
+          <Router>
+            <Routes>
+              <Route path="/professor" element={<ProfessorPage />} />
+              <Route path="/professor/home/*" element={<ProfessorHomePage />} />
+              <Route path="/points" element={<Points />} />
+              <Route path="/themes" element={<ThemesTable />} />
+              <Route path="/fact" element={<ArduinoFact />} />
+              <Route path="*" element={<Navigate to={'/fact'} replace={true} />} />
+            </Routes>
+          </Router>
+        </WarningDialogProvider>
+      </SnackbarProvider>
     </div>
   );
 }

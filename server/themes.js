@@ -23,11 +23,10 @@ router.put('/add', async (req, res) => {
       const group = '';
       const data = { name, group };
       await themes.insertOne(data);
-      const { _id, ...dataWithoutId } = data;
-      res.status(200).json(dataWithoutId);
+      res.status(200).json(data);
     }
   } catch (e) {
-    res.status(500).json('Internal server error');
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -40,7 +39,7 @@ router.get('/', async (req, res) => {
     const themes = await themesCursor.toArray();
     res.status(200).json(themes);
   } catch (e) {
-    res.status(500).send({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -67,9 +66,9 @@ router.delete('/delete/:id', async (req, res) => {
 
     await themes.deleteOne({ _id: new ObjectId(themeId) });
 
-    res.status(200).send('Tema uspešno obrisana.');
+    res.status(200).json({ message: 'Tema uspešno obrisana.' });
   } catch (e) {
-    res.status(500).send({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 
 });

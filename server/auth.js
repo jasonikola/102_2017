@@ -31,12 +31,12 @@ router.post('/login', async (req, res) => {
     const badCredentials = "Email ili lozinka nisu tačni.";
 
     if (!user) {
-      res.status(401).send({ error: badCredentials });
+      res.status(401).json({ error: badCredentials });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      res.status(401).send({ error: badCredentials });
+      res.status(401).json({ error: badCredentials });
     }
 
     const accessToken = createAccessToken(user._id);
@@ -57,9 +57,9 @@ router.post('/login', async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).send('Profesor uspešno prijavljen.')
+    res.status(200).json({ message: 'Profesor uspešno prijavljen.' })
   } catch (error) {
-    res.status(500).send({ error: 'Internal server Error' });
+    res.status(500).json({ error: 'Internal server Error' });
   }
 });
 
@@ -68,14 +68,14 @@ router.post("/logout", (req, res) => {
 
   res.clearCookie("accessToken");
   res.clearCookie("refreshToken");
-  res.status(200).send('Profesor uspešno odjavljen.');
+  res.status(200).json({ message: 'Profesor uspešno odjavljen.' });
 });
 
 router.post('/refresh', (req, res) => {
   console.log('/auth/refresh call');
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
-    res.status(401).json({ message: 'Greška sa refresh tokenom.' });
+    res.status(401).json({ error: 'Greška sa refresh tokenom.' });
     // TODO chech all messages
   }
 
@@ -92,7 +92,7 @@ router.post('/refresh', (req, res) => {
 
     res.json({ message: "Token uspešno osvežen" });
   } catch (error) {
-    res.status(500).send({ error: 'Internal server Error' });
+    res.status(500).json({ error: 'Internal server Error' });
   }
 });
 
@@ -103,7 +103,7 @@ router.get("/me", (req, res) => {
 
   try {
     jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).send('Korisnik prijavljen.');
+    res.status(200).json({ message: 'Korisnik prijavljen.' });
   } catch {
     res.status(401).json({ error: "Korisnik nije prijavljen." });
   }

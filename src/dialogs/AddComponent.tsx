@@ -11,6 +11,7 @@ import {
 import React from 'react';
 import { ErrorManager } from "../utils/ErrorManager";
 import api from "../services/api";
+import { useSnackbar } from "../components/SnachbarProvider";
 
 interface AddComponentProps {
   open: boolean;
@@ -22,9 +23,10 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
   const [name, setName] = React.useState('');
   const [quantity, setQuantity] = React.useState(0);
   const [image, setImage] = React.useState<File | null>(null);
+  const { showSuccessMessage } = useSnackbar();
 
   const addComponent = async () => {
-    if(!image) {
+    if (!image) {
       return;
     }
 
@@ -40,8 +42,9 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
         }
       });
 
-      if(response.status === 200 && response.data) {
+      if (response.status === 200 && response.data) {
         resetValues();
+        showSuccessMessage('Komponenta uspešno dodata.');
         props.closeAndRefresh(response.data);
       }
     } catch (error: any) {
@@ -50,7 +53,7 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
   };
 
   const checkButtonDisable = () => {
-    return !name || !image ||  quantity <= 0 || !quantity;
+    return !name || !image || quantity <= 0 || !quantity;
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,6 +114,7 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
               onChange={(e) => handleQuantityChange(e.target.value)}
               required
               sx={{ width: 100 }}
+              autoComplete={'off'}
             />
           </Box>
 

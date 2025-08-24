@@ -72,6 +72,7 @@ function ProfessorPage() {
           <TextField
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete={'off'}
             placeholder={'E-mail'}
             fullWidth
             required
@@ -80,6 +81,7 @@ function ProfessorPage() {
           <TextField
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete={'off'}
             placeholder={'Lozinka'}
             type={'password'}
             fullWidth

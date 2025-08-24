@@ -11,6 +11,7 @@ import {
 import React, { useEffect } from 'react';
 import { ErrorManager } from "../utils/ErrorManager";
 import api from "../services/api";
+import { useSnackbar } from "../components/SnachbarProvider";
 
 interface StudentPointsProps {
   open: boolean;
@@ -25,6 +26,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
   const [reTest2, setReTest2] = React.useState<number>(0);
   const [project, setProject] = React.useState<number>(0);
   const [exam, setExam] = React.useState<number>(0);
+  const { showSuccessMessage } = useSnackbar();
 
   const { student } = props;
 
@@ -80,7 +82,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
     try {
       const response = await api.post('/students/savePoints', data);
       if (response?.status === 200 && response.data) {
-        console.log('Success!');
+        showSuccessMessage(response.data.message);
       }
     } catch (error: any) {
       ErrorManager.show(error.response.data.error);
@@ -101,6 +103,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
               onChange={(e) => setTest1(Number(e.target.value))}
               fullWidth={false}
               sx={{ width: 120 }}
+              autoComplete={'off'}
             />
 
             <TextField
@@ -111,6 +114,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
               onChange={(e) => setTest2(Number(e.target.value))}
               fullWidth={false}
               sx={{ width: 120 }}
+              autoComplete={'off'}
             />
 
             <TextField
@@ -121,6 +125,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
               onChange={(e) => setReTest1(Number(e.target.value))}
               fullWidth={false}
               sx={{ width: 120 }}
+              autoComplete={'off'}
             />
 
             <TextField
@@ -131,6 +136,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
               onChange={(e) => setReTest2(Number(e.target.value))}
               fullWidth={false}
               sx={{ width: 120 }}
+              autoComplete={'off'}
             />
 
             <TextField
@@ -141,6 +147,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
               onChange={(e) => setProject(Number(e.target.value))}
               fullWidth={false}
               sx={{ width: 120 }}
+              autoComplete={'off'}
             />
 
             <TextField
@@ -151,6 +158,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
               fullWidth={false}
               sx={{ width: 120 }}
               inputProps={{ min: 0, max: 30 }}
+              autoComplete={'off'}
               // TODO REMOVE inputProps
             />
           </Box>
