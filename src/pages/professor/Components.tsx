@@ -17,8 +17,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { ErrorManager } from "../../utils/ErrorManager";
 import api from "../../services/api";
 
-// TODO add component model
-
 function Components() {
   const [components, setComponents] = React.useState<any[]>([]);
   const [addComponentOpen, setAddComponentOpen] = React.useState(false);
@@ -75,7 +73,7 @@ function Components() {
             <TableRow>
               <TableCell></TableCell>
               <TableCell>Ime komponente</TableCell>
-              <TableCell>Kolicina</TableCell>
+              <TableCell>Količina</TableCell>
               <TableCell>Dodeljeno</TableCell>
               <TableCell>Slobodno</TableCell>
               <TableCell></TableCell>

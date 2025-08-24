@@ -196,7 +196,7 @@ function Groups() {
           <TableHead>
             <TableRow>
               <TableCell>Ime grupe</TableCell>
-              <TableCell>Clanovi</TableCell>
+              <TableCell>Članovi</TableCell>
               <TableCell>Tema za seminarski</TableCell>
               <TableCell>Komponente</TableCell>
               <TableCell></TableCell>

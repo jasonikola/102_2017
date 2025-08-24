@@ -188,7 +188,7 @@ function Students() {
                 </TableCell>
                 <TableCell>
                   <Button variant={'text'} onClick={() => showPoints(student)}>
-                    Prikazi poene
+                    Prikaži poene
                   </Button>
                 </TableCell>
                 <TableCell>

@@ -30,9 +30,6 @@ function Header() {
           Ardunent
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <IconButton onClick={() => console.log('TODO settings')} color="secondary">
-          <SettingsIcon />
-        </IconButton>
         <IconButton onClick={onClickHandler} color="secondary">
           <LogoutIcon />
         </IconButton>

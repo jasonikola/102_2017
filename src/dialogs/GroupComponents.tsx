@@ -203,7 +203,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
     <DialogContent>
       <Box display={'flex'} flexDirection={'column'} gap={2}>
         <Typography variant={'subtitle1'}>
-          Sabloni
+          Šabloni
         </Typography>
         {!!templates?.length && (
           <Box display="flex" flexWrap="wrap" gap={1}>
@@ -321,19 +321,20 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
                       style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover'
+                        objectFit: 'cover',
+                        opacity: component.totalQuantity - component.assigned > 0 ? 1 : 0.5
                       }}
                     />
                     <Box
-                      position="absolute"
+                      position={'absolute'}
                       bottom={0}
-                      width="100%"
-                      bgcolor="rgba(0, 0, 0, 0.6)"
-                      color="white"
-                      textAlign="center"
+                      width={'100%'}
+                      bgcolor={'rgba(0, 0, 0, 0.6)'}
+                      color={'white'}
+                      textAlign={'center'}
                       px={1}
                       py={0.5}
-                      fontSize="0.75rem"
+                      fontSize={'0.75rem'}
                       lineHeight={1.2}
                     >
                       {component.name}
@@ -351,7 +352,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
         onClick={assignComponents}
         disabled={disableSaveButton()}
       >
-        Sacuvaj
+        Sačuvaj
       </Button>
       <Button
         onClick={closeDialog}

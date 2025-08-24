@@ -96,7 +96,7 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete={'off'}
-              fullWidth
+              sx={{ width: 400 }}
               required
             />
           </Box>
@@ -109,8 +109,8 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
               type={'number'}
               value={quantity}
               onChange={(e) => handleQuantityChange(e.target.value)}
-              fullWidth
               required
+              sx={{ width: 100 }}
             />
           </Box>
 

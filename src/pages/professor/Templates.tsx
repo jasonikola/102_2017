@@ -85,13 +85,13 @@ function Templates() {
       <TableContainer component={Paper}>
         <Box display={'flex'} gap={1} p={1}>
           <Button variant={'contained'} onClick={openAddTemplateDialog}>
-            Dodaj sablon
+            Dodaj šablon
           </Button>
         </Box>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Ime sablona</TableCell>
+              <TableCell>Ime šablona</TableCell>
               <TableCell>Komponente</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>

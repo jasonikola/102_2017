@@ -165,7 +165,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
           onClick={savePoints}
           variant={'contained'}
         >
-          {'Sacuvaj'}
+          {'Sačuvaj'}
         </Button>
         <Button
           onClick={closeDialog}
