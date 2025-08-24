@@ -174,7 +174,7 @@ router.delete('/delete/:id', async (req, res) => {
     const group = await groupsCollection.findOne({ _id: new ObjectId(groupId) });
 
     if (!group) {
-      return res.status(404).json({ error: 'Grupa nije pronadjena.' });
+      return res.status(404).json({ error: 'Grupa nije pronađena.' });
     }
 
     if (group.components.length) {
@@ -183,7 +183,7 @@ router.delete('/delete/:id', async (req, res) => {
       for (const component of components) {
         const dbComponent = await componentsCollection.findOne({ _id: new ObjectId(component._id) });
         if (!dbComponent) {
-          res.status(401).send({ error: 'Doslo je do greske.' });
+          res.status(401).send({ error: 'Došlo je do greške.' });
         }
         dbComponent.assigned -= component.quantity;
         await componentsCollection.updateOne({ _id: new ObjectId(dbComponent._id) }, { $set: { assigned: dbComponent.assigned } });
@@ -199,7 +199,7 @@ router.delete('/delete/:id', async (req, res) => {
     await studentsCollection.updateMany({ group: group.name }, { $set: { group: '' } });
 
     await groupsCollection.deleteOne({ _id: new ObjectId(groupId) });
-    res.status(200).json('Grupa uspesno isbrisana.');
+    res.status(200).json('Grupa uspešno isbrisana.');
   } catch (e) {
     res.status(500).send({ error: 'Internal server error' });
   }

@@ -89,7 +89,7 @@ router.delete('/delete/:id', async (req, res) => {
     const component = await componentsCollection.findOne({ _id: new ObjectId(componentId) });
 
     if (!component) {
-      return res.status(404).json({ error: 'Komponenta nije pronadjena.' });
+      return res.status(404).json({ error: 'Komponenta nije pronađena.' });
     }
 
     const imagePath = path.join(__dirname, component.image);

@@ -18,7 +18,7 @@ router.put('/add', async (req, res) => {
     const theme = await themes.findOne({ name: name });
 
     if (theme) {
-      res.status(401).json({ error: "Vec postoji tema sa datim imenom" });
+      res.status(401).json({ error: "Već postoji tema sa datim imenom" });
     } else {
       const group = '';
       const data = { name, group };
@@ -57,7 +57,7 @@ router.delete('/delete/:id', async (req, res) => {
     const themes = await db.collection('themes');
     const theme = await themes.findOne({ _id: new ObjectId(themeId) });
     if (!theme) {
-      return res.status(404).json({ error: 'Tema nije pronadjena.' });
+      return res.status(404).json({ error: 'Tema nije pronađena.' });
     }
 
     if (theme.group) {
@@ -67,7 +67,7 @@ router.delete('/delete/:id', async (req, res) => {
 
     await themes.deleteOne({ _id: new ObjectId(themeId) });
 
-    res.status(200).send('Tema uspesno obrisana.');
+    res.status(200).send('Tema uspešno obrisana.');
   } catch (e) {
     res.status(500).send({ error: 'Internal server error' });
   }

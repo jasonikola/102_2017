@@ -109,7 +109,7 @@ router.post('/savePoints', async (req, res) => {
       res.status(404).send('Student ne postoji.');
     }
     await studentsCollection.updateOne({ _id: studentObjectId }, { $set: { points } });
-    res.status(200).json('Poeni studenta uspesno promenjeni.');
+    res.status(200).json('Poeni studenta uspešno promenjeni.');
   } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });
   }
@@ -156,7 +156,7 @@ router.post('/addCsv', upload.single('file'), async (req, res) => {
       }
     }
 
-    res.status(200).json('Korisnici uspesno dodati.');
+    res.status(200).json('Korisnici uspešno dodati.');
   } catch (e) {
     res.status(500).send({ error: 'Internal Server Error' });
   }
@@ -176,11 +176,11 @@ router.delete('/delete/:id', async (req, res) => {
 
     const student = await studentsCollection.findOne({ _id: new ObjectId(studentId) });
     if (!student) {
-      return res.status(404).json({ error: 'Student nije pronadjen.' });
+      return res.status(404).json({ error: 'Student nije pronađen.' });
     }
 
     await studentsCollection.deleteOne({ _id: new ObjectId(studentId) });
-    res.status(200).send('Student uspesno obrisan');
+    res.status(200).send('Student uspešno obrisan');
   } catch (e) {
     res.status(500).send({ error: 'Internal server error' });
   }

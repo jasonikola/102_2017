@@ -4,7 +4,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const { authMiddleware } = require('./middleware');
 
-const userRoutes = require('./users');
 const studentsRoutes = require('./students');
 const groupsRoutes = require('./groups');
 const themesRoutes = require('./themes');
