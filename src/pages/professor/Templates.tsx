@@ -32,7 +32,7 @@ function Templates() {
     try {
       return await ApiService.getTemplates();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju šablona.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri učitavanju šablona.');
     }
   }
 
@@ -79,7 +79,7 @@ function Templates() {
         showSuccessMessage(response.data?.message);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri brisanju šablona.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri brisanju šablona.');
     }
   }
 
@@ -95,9 +95,7 @@ function Templates() {
           <TableHead>
             <TableRow>
               <TableCell>Ime šablona</TableCell>
-              <TableCell>Komponente</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+              <TableCell colSpan={3}>Komponente</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
@@ -110,24 +108,23 @@ function Templates() {
                       {template.name}
                     </TableCell>
                   )}
-
+                  <TableCell>
+                    {component.quantity ?? '-'}
+                  </TableCell>
                   <TableCell>
                     <img
                       src={`${API_URL}/${component.image}`}
                       alt={component.name}
-                      width={40}
-                      height={40}
+                      width={60}
+                      height={60}
                       style={{ borderRadius: 4, objectFit: 'cover' }}
                     />
-                  </TableCell>
-                  <TableCell>
-                    {component.quantity ?? '-'}
                   </TableCell>
                   <TableCell>
                     {component.name}
                   </TableCell>
                   {index === 0 && (
-                    <TableCell rowSpan={template.components.length}>
+                    <TableCell rowSpan={template.components.length}  sx={{ width: 10 }}>
                       <Box display={'flex'} flexDirection={'column'} gap={1}>
                         <IconButton
                           color={'primary'}

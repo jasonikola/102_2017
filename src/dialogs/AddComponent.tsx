@@ -48,7 +48,7 @@ const AddComponent: React.FC<AddComponentProps> = (props: AddComponentProps) => 
         props.closeAndRefresh(response.data);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   };
 

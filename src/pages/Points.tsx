@@ -51,6 +51,7 @@ function Points() {
             <TableCell>Drugi popravni</TableCell>
             <TableCell>Seminarski</TableCell>
             <TableCell>Ispit</TableCell>
+            <TableCell>Prisustvo</TableCell>
             <TableCell>Ukupno</TableCell>
           </TableRow>
         </TableHead>
@@ -66,6 +67,7 @@ function Points() {
                 <TableCell>{student.reTest2 ?? "-"}</TableCell>
                 <TableCell>{student.project ?? "-"}</TableCell>
                 <TableCell>{student.exam ?? "-"}</TableCell>
+                <TableCell>{student.presence ?? "-"}</TableCell>
                 <TableCell>{calculateTotalPoints(student)}</TableCell>
               </TableRow>
             ))}

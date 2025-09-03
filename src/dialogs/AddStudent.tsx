@@ -41,7 +41,7 @@ const AddStudent: React.FC<AddStudentProps> = (props: AddStudentProps) => {
         showSuccessMessage('Student uspešno dodat.');
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   }
 

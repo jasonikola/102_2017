@@ -38,7 +38,6 @@ router.get('/', async (req, res) => {
     const groupsCollection = await db.collection('groups');
     const groupsCursor = groupsCollection.find();
     const groups = await groupsCursor.toArray();
-    // TODO check if manny
 
     const studentsCollection = await db.collection('students');
     const returnValue = await Promise.all(
@@ -72,7 +71,6 @@ router.post('/assignTheme', async (req, res) => {
     const db = await connectToDatabase();
     const groupsCollection = db.collection('groups');
     const group = await groupsCollection.findOne({ name: groupName });
-    // TODO check after templateName -> groupName change
     const themesCollection = db.collection('themes');
     const theme = await themesCollection.findOne({ name: themeName });
 

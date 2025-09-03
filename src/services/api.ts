@@ -8,7 +8,6 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-  console.log(error);
     const originalRequest = error.config;
     if (originalRequest.url?.includes("/auth/refresh")) {
       window.location.href = "/fact";

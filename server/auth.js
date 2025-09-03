@@ -76,7 +76,6 @@ router.post('/refresh', (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     res.status(401).json({ error: 'Greška sa refresh tokenom.' });
-    // TODO chech all messages
   }
 
   try {

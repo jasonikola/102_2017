@@ -58,7 +58,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
     try {
       return await ApiService.getComponents();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   };
 
@@ -76,7 +76,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
         showSuccessMessage('Šablon uspešno dodat.');
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   };
 
@@ -140,7 +140,7 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
         props.closeAndRefresh(response.data);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   }
 
@@ -187,8 +187,8 @@ const AddTemplate: React.FC<AddTemplateProps> = (props: AddTemplateProps) => {
                     <img
                       src={`${API_URL}/${component.image}`}
                       alt={component.name}
-                      width={40}
-                      height={40}
+                      width={60}
+                      height={60}
                       style={{ borderRadius: 4, objectFit: 'cover' }}
                     />
                     <Typography

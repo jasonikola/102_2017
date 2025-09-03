@@ -26,18 +26,20 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
   const [reTest2, setReTest2] = React.useState<number>(0);
   const [project, setProject] = React.useState<number>(0);
   const [exam, setExam] = React.useState<number>(0);
+  const [presence, setPresence] = React.useState<number>(0);
   const { showSuccessMessage } = useSnackbar();
 
   const { student } = props;
 
   useEffect(() => {
     if (student?.points) {
-      const { test1, test2, reTest1, reTest2, project, exam } = student?.points;
+      const { test1, test2, reTest1, reTest2, project, exam, presence } = student?.points;
       setTest1(test1);
       setTest2(test2);
       setReTest1(reTest1);
       setReTest2(reTest2);
       setProject(project);
+      setPresence(presence);
       setExam(exam);
     }
   }, [props.open]);
@@ -45,7 +47,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
   const calculateTotalPoints = (): number => {
     const kol1 = test1 > reTest1 ? test1 : reTest1;
     const kol2 = test2 > reTest2 ? test2 : reTest2;
-    return kol1 + kol2 + project + exam;
+    return kol1 + kol2 + project + exam + presence;
   };
 
   const resetValues = () => {
@@ -55,6 +57,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
     setReTest2(0);
     setProject(0);
     setExam(0);
+    setPresence(0);
   };
 
   const closeDialog = () => {
@@ -69,7 +72,8 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
       reTest1,
       reTest2,
       project,
-      exam
+      exam,
+      presence
     }
   }
 
@@ -82,10 +86,11 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
     try {
       const response = await api.post('/students/savePoints', data);
       if (response?.status === 200 && response.data) {
-        showSuccessMessage(response.data.message);
+        showSuccessMessage(response.data.message || 'Poeni studenta uspešno promenjeni.');
+        closeDialog();
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   }
 
@@ -98,7 +103,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
             <TextField
               label={'1. kolokvijum'}
               type={'number'}
-              inputProps={{ min: 0, max: 30 }}
+              inputProps={{ min: 0, max: 18 }}
               value={test1}
               onChange={(e) => setTest1(Number(e.target.value))}
               fullWidth={false}
@@ -109,7 +114,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
             <TextField
               label={'2. kolokvijum'}
               type={'number'}
-              inputProps={{ min: 0, max: 30 }}
+              inputProps={{ min: 0, max: 18 }}
               value={test2}
               onChange={(e) => setTest2(Number(e.target.value))}
               fullWidth={false}
@@ -120,7 +125,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
             <TextField
               label={'1. popravni'}
               type={'number'}
-              inputProps={{ min: 0, max: 30 }}
+              inputProps={{ min: 0, max: 18 }}
               value={reTest1}
               onChange={(e) => setReTest1(Number(e.target.value))}
               fullWidth={false}
@@ -131,7 +136,7 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
             <TextField
               label={'2. popravni'}
               type={'number'}
-              inputProps={{ min: 0, max: 30 }}
+              inputProps={{ min: 0, max: 18 }}
               value={reTest2}
               onChange={(e) => setReTest2(Number(e.target.value))}
               fullWidth={false}
@@ -158,6 +163,18 @@ const StudentPoints: React.FC<StudentPointsProps> = (props: StudentPointsProps) 
               fullWidth={false}
               sx={{ width: 120 }}
               inputProps={{ min: 0, max: 30 }}
+              autoComplete={'off'}
+              // TODO REMOVE inputProps
+            />
+
+            <TextField
+              label={'Prisustvo'}
+              type={'number'}
+              value={presence}
+              onChange={(e) => setPresence(Number(e.target.value))}
+              fullWidth={false}
+              sx={{ width: 120 }}
+              inputProps={{ min: 0, max: 4 }}
               autoComplete={'off'}
               // TODO REMOVE inputProps
             />

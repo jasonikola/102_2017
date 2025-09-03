@@ -9,7 +9,6 @@ export const theme = createTheme({
       main: '#E2F1EC'
     }
   },
-  // TODO add padding to every paper
   components: {
     MuiOutlinedInput: {
       styleOverrides: {
@@ -31,6 +30,7 @@ export const theme = createTheme({
           padding: '4px 8px',
           verticalAlign: 'top',
           horizontalAlign: 'center',
+          border: '1px solid rgba(224, 224, 224, 1)',
         },
       }
     },
@@ -38,8 +38,35 @@ export const theme = createTheme({
       styleOverrides: {
         paper: {
           minWidth: "800px",
+          borderRadius: "16px"
         },
       },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#00979D',
+          color: 'white'
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          marginTop: '8px',
+        }
+      }
+    },
+    MuiSnackbar: {
+      styleOverrides: {
+        root: {
+          minWidth: 500,
+          maxWidth: '80vw',
+          borderRadius: 8,
+          padding: '8px 16px',
+
+        }
+      }
     },
   },
   typography: {

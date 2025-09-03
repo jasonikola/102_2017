@@ -35,7 +35,7 @@ function Themes() {
     try {
       return await ApiService.getThemes();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju tema.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri učitavanju tema.');
     }
   }
 
@@ -53,7 +53,7 @@ function Themes() {
         showSuccessMessage('Tema uspešno dodata.');
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri dodavanju teme.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri dodavanju teme.');
     }
   }
 
@@ -71,7 +71,7 @@ function Themes() {
         showSuccessMessage(response.data?.message);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri brisanju teme.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri brisanju teme.');
     }
   }
 
@@ -118,7 +118,7 @@ function Themes() {
               <TableRow key={theme.name}>
                 <TableCell>{theme.name}</TableCell>
                 <TableCell>{theme.group ? theme.group : 'Nije dodeljeno grupi'}</TableCell>
-                <TableCell>
+                <TableCell sx={{ width: 10 }}>
                   <IconButton
                     color={'error'}
                     onClick={() => deleteTheme(theme)}

@@ -54,7 +54,7 @@ function Students() {
         return response.data;
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju studenata.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri učitavanju studenata.');
     }
   }
 
@@ -63,7 +63,7 @@ function Students() {
       const groups = await ApiService.getGroups();
       return groups.map((group: any) => group.name)
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju grupa.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri učitavanju grupa.');
     }
   }
 
@@ -109,7 +109,7 @@ function Students() {
         showSuccessMessage(response.data?.message);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri dodeljivanju grupe.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri dodeljivanju grupe.');
     }
   }
 
@@ -177,7 +177,7 @@ function Students() {
           <TableBody>
             {!!students?.length && students.map((student: any, index) => (
               <TableRow key={`tableRow${student.index}`}>
-                <TableCell>{student.index}</TableCell>
+                <TableCell sx={{ width: 80 }}>{student.index}</TableCell>
                 <TableCell>{`${student.firstName} ${student.lastName}`}</TableCell>
                 <TableCell>
                   <Select
@@ -193,12 +193,12 @@ function Students() {
                     ))}
                   </Select>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ width: 160 }}>
                   <Button variant={'text'} onClick={() => showPoints(student)}>
                     Prikaži poene
                   </Button>
                 </TableCell>
-                <TableCell>
+                <TableCell  sx={{ width: 10 }}>
                   <IconButton
                     color={'error'}
                     onClick={() => deleteStudent(student)}

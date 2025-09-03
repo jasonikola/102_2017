@@ -48,7 +48,6 @@ router.get('/', async (req, res) => {
     const studentCollection = db.collection('students');
     const studentsCursor = studentCollection.find();
     const students = await studentsCursor.toArray();
-    // TODO check what would happen if there is a lot of students
     res.status(200).json(students);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });

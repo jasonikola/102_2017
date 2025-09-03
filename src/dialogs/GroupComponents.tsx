@@ -14,7 +14,7 @@ import ApiService from "../ApiService";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ErrorManager } from "../utils/ErrorManager";
 import api from "../services/api";
-import {useSnackbar} from "../components/SnachbarProvider";
+import { useSnackbar } from "../components/SnachbarProvider";
 
 interface GroupComponentsProps {
   open: boolean;
@@ -78,7 +78,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
     try {
       return await ApiService.getComponents();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   };
 
@@ -86,7 +86,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
     try {
       return await ApiService.getTemplates();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   }
 
@@ -142,11 +142,14 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
     try {
       const response = await api.post('/groups/assignComponents', data);
       if (response?.status === 200 && response.data) {
-        setReturnValue({ ...response.data, members });
+        const updatedReturnValue = { ...response.data, members };
+        setReturnValue(updatedReturnValue);
         showSuccessMessage('Komponente grupe uspešno sačuvane.');
+        props.onClose(updatedReturnValue);
+        resetValues();
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   }
 
@@ -284,7 +287,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
                     flex: 1
                   }}
                 >
-                  Max: {component.maxQuantity}
+                  Max {component.maxQuantity}
                 </Typography>
                 <IconButton
                   color={'primary'}
@@ -298,7 +301,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
         }
         {
           (addComponentButton && remainingComponents?.length) ?
-            <Box display={ 'flex'}>
+            <Box display={'flex'}>
               <Button variant={'contained'} onClick={() => setAddComponentButton(false)}>
                 Dodaj komponentu
               </Button>
@@ -308,6 +311,7 @@ const GroupComponents: React.FC<GroupComponentsProps> = (props: GroupComponentsP
               {
                 remainingComponents?.map((component: any) => (
                   <Button
+                    key={`button${component.name}`}
                     onClick={() => addComponent(component)}
                     disabled={component.totalQuantity - component.assigned === 0}
                     sx={{

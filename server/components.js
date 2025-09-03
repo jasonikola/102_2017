@@ -66,7 +66,6 @@ router.get('/', async (req, res) => {
     const componentsCollection = await db.collection('components');
     const componentsCursor = await componentsCollection.find();
     const components = await componentsCursor.toArray();
-    // TODO check if many
 
     res.status(200).json(components);
   } catch (e) {

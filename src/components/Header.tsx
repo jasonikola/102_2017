@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { ErrorManager } from "../utils/ErrorManager";
 import axios from "axios";
 
@@ -14,7 +13,7 @@ function Header() {
       await axios.post('/auth/logout');
       navigate('/professor');
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Došlo je do greške, pokušajte ponovo.');
+      ErrorManager.show(error.response?.data.error || 'Došlo je do greške, pokušajte ponovo.');
     }
   }
 

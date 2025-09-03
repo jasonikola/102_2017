@@ -32,7 +32,7 @@ function Components() {
     try {
       return await ApiService.getComponents();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju komponenti.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri učitavanju komponenti.');
     }
   }
 
@@ -42,8 +42,7 @@ function Components() {
 
   const closeAndRefresh = (component: any) => {
     setAddComponentOpen(false);
-    const updatedComponents = [...components];
-    updatedComponents.unshift(component);
+    const updatedComponents = [...components, component];
     setComponents(updatedComponents);
   }
 
@@ -56,7 +55,7 @@ function Components() {
         showSuccessMessage(response.data?.message);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri brisanju komponente.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri brisanju komponente.');
     }
   }
 
@@ -74,8 +73,8 @@ function Components() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell></TableCell>
-              <TableCell>Ime komponente</TableCell>
+              <TableCell>Slika</TableCell>
+              <TableCell>Ime</TableCell>
               <TableCell>Količina</TableCell>
               <TableCell>Dodeljeno</TableCell>
               <TableCell>Slobodno</TableCell>
@@ -97,7 +96,7 @@ function Components() {
                   <TableCell>{component.quantity}</TableCell>
                   <TableCell>{component.assigned}</TableCell>
                   <TableCell>{component.quantity - component.assigned}</TableCell>
-                  <TableCell>
+                  <TableCell  sx={{ width: 10 }}>
                     <IconButton
                       color={'error'}
                       onClick={() => deleteComponent(component)}

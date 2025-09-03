@@ -41,7 +41,7 @@ function Groups() {
     try {
       return await ApiService.getGroups();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju grupa.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri učitavanju grupa.');
     }
   }
 
@@ -49,7 +49,7 @@ function Groups() {
     try {
       return await ApiService.getThemes();
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri učitavanju tema.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri učitavanju tema.');
     }
   }
 
@@ -67,7 +67,7 @@ function Groups() {
         showSuccessMessage('Grupa uspešno dodata.');
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri dodavanju grupe.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri dodavanju grupe.');
     }
   }
 
@@ -103,7 +103,7 @@ function Groups() {
         showSuccessMessage(response.data.message);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error || 'Greška pri brisanju grupe.');
+      ErrorManager.show(error.response?.data.error || 'Greška pri brisanju grupe.');
     }
   }
 
@@ -129,7 +129,7 @@ function Groups() {
         showSuccessMessage(response.data.message);
       }
     } catch (error: any) {
-      ErrorManager.show(error.response.data.error);
+      ErrorManager.show(error.response?.data.error);
     }
   }
 
@@ -202,7 +202,7 @@ function Groups() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Ime grupe</TableCell>
+              <TableCell>Ime</TableCell>
               <TableCell>Članovi</TableCell>
               <TableCell>Tema za seminarski</TableCell>
               <TableCell>Komponente</TableCell>
@@ -233,7 +233,7 @@ function Groups() {
                         <TableCell rowSpan={rowSpan}>
                           {componentsButtonComponent(group)}
                         </TableCell>
-                        <TableCell rowSpan={rowSpan}>
+                        <TableCell rowSpan={rowSpan} sx={{ width: 10 }}>
                           <IconButton
                             color={'error'}
                             onClick={() => deleteGroup(group)}
@@ -249,14 +249,14 @@ function Groups() {
                 // There is no members
                 <TableRow key={`noMembers-${group.name}`}>
                   <TableCell>{group.name}</TableCell>
-                  <TableCell>Grupa nema clanova</TableCell>
+                  <TableCell>Grupa nema članova</TableCell>
                   <TableCell>
                     {selectThemeComponent(group, index)}
                   </TableCell>
                   <TableCell>
                     {componentsButtonComponent(group)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ width: 10 }}>
                     <IconButton
                       color={'error'}
                       onClick={() => deleteGroup(group)}

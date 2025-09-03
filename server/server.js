@@ -33,7 +33,6 @@ app.use('/components', authMiddleware, componentsRoutes);
 app.use('/templates', authMiddleware, templatesRoutes);
 app.use('/points', pointsRoutes);
 app.use('/projectThemes', projectThemesRoutes);
-// TODO check for return of server calls
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
